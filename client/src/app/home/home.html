@@ -1,33 +1,7 @@
 <div
   class="min-h-screen bg-[#faf9f6] text-[#253c32] [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-4 [&_a]:focus-visible:outline-[#74915e] [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-4 [&_button]:focus-visible:outline-[#74915e]"
 >
-  <a
-    class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-5 focus:z-10 focus:bg-white focus:p-3"
-    href="#conteudo"
-    >Pular para o conteúdo</a
-  >
-  <header
-    class="flex h-20 items-center justify-between sm:h-[100px] mx-auto w-[calc(100%-36px)] max-w-[1120px] sm:w-[calc(100%-64px)]"
-  >
-    <a
-      class="inline-flex items-center text-xl font-bold tracking-tight sm:text-2xl"
-      href="#"
-      aria-label="NoteKeeper, início"
-      ><span
-        class="mr-2.5 grid size-9 place-items-center rounded-xl bg-[#284e3c] pb-1 font-serif text-3xl text-white"
-        aria-hidden="true"
-        >n.</span
-      >NoteKeeper<span class="text-[#699877]">.</span></a
-    >
-    <nav class="flex items-center gap-8 text-[13px] font-semibold" aria-label="Navegação principal">
-      <a class="hidden hover:text-[#638365] sm:block" href="#recursos">Como funciona</a
-      ><a
-        class="rounded-lg border border-[#cfd6cc] px-4 py-2.5 hover:bg-[#edf0e8] [&_span]:ml-5"
-        href="#notas"
-        >Explorar <span aria-hidden="true">↗</span></a
-      >
-    </nav>
-  </header>
+  <app-navbar></app-navbar>
   <main id="conteudo">
     <section
       class="grid items-center gap-8 pt-8 pb-12 md:min-h-[535px] md:grid-cols-[1.1fr_1fr] md:pb-16 mx-auto w-[calc(100%-36px)] max-w-[1120px] sm:w-[calc(100%-64px)]"
@@ -51,7 +25,7 @@
         </p>
         <a
           class="inline-flex items-center gap-7 rounded-lg bg-[#2e543f] px-6 py-4 text-[13px] font-semibold text-white hover:bg-[#1e3e2c]"
-          href="#notas"
+          href="#login"
           >Conheça o NoteKeeper <span aria-hidden="true">↗</span></a
         >
         <span class="mt-4 block text-[11px] text-[#727971]"
