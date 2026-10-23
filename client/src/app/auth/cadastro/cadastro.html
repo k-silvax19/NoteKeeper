@@ -1,3 +1,4 @@
+<app-navbar></app-navbar>
 <app-auth-shell>
   <div class="mb-8">
     <p class="mb-3 text-xs font-semibold tracking-[0.15em] text-[#638365]">COMECE POR AQUI</p>
@@ -28,13 +29,26 @@
   >
     <div>
       <label for="cadastro-nome" class="mb-2 block text-sm font-medium">Nome</label>
-      <input id="cadastro-nome" type="text" autocomplete="name" placeholder="Como podemos chamar você?"
+      <input
+        id="cadastro-nome"
+        type="text"
+        autocomplete="name"
+        placeholder="Como podemos chamar você?"
         [formField]="formularioCadastro.nome"
-        [attr.aria-invalid]="formularioCadastro.nome().touched() && formularioCadastro.nome().invalid()"
-        [attr.aria-describedby]="formularioCadastro.nome().touched() && formularioCadastro.nome().invalid() ? 'cadastro-nome-erro' : null"
-        class="w-full rounded-xl border border-[#d9dfd5] bg-[#fdfdfb] px-4 py-3.5 text-base outline-none transition placeholder:text-[#91988d] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 aria-[invalid=true]:border-rose-600" />
+        [attr.aria-invalid]="
+          formularioCadastro.nome().touched() && formularioCadastro.nome().invalid()
+        "
+        [attr.aria-describedby]="
+          formularioCadastro.nome().touched() && formularioCadastro.nome().invalid()
+            ? 'cadastro-nome-erro'
+            : null
+        "
+        class="w-full rounded-xl border border-[#d9dfd5] bg-[#fdfdfb] px-4 py-3.5 text-base outline-none transition placeholder:text-[#91988d] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 aria-[invalid=true]:border-rose-600"
+      />
       @if (formularioCadastro.nome().touched() && formularioCadastro.nome().invalid()) {
-        <p id="cadastro-nome-erro" class="mt-2 text-sm text-rose-700">{{ formularioCadastro.nome().errors()[0].message }}</p>
+        <p id="cadastro-nome-erro" class="mt-2 text-sm text-rose-700">
+          {{ formularioCadastro.nome().errors()[0].message }}
+        </p>
       }
     </div>
     <div>

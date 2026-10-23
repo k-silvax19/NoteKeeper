@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { Navbar } from '../shared/navbar/navbar';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [Navbar],
+  imports: [Navbar, RouterLink],
   selector: 'app-home',
   templateUrl: './home.html',
 })

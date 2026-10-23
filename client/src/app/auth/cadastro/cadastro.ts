@@ -14,6 +14,7 @@ import {
 } from '../auth-models';
 import { AuthService } from '../auth.service';
 import { AuthShell} from '../shell/auth-shell';
+import { Navbar } from '../../shared/navbar/navbar';
 
 interface CadastroFormModel {
   readonly nome: string;
@@ -22,7 +23,7 @@ interface CadastroFormModel {
 }
 
 @Component({
-  imports: [AuthShell, FormField, RouterLink],
+  imports: [AuthShell, FormField, RouterLink, Navbar],
   selector: 'app-cadastro',
   templateUrl: './cadastro.html',
 })
