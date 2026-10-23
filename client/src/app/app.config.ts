@@ -7,26 +7,31 @@ import { environment } from './environments/environment';
 
 export const routes: Routes = [
   {
-    path:'',
+    path: '',
     loadComponent: () => import('./home/home').then((c) => c.Home),
   },
   {
-    path:'cadastro',
+    path: 'cadastro',
     loadComponent: () => import('./auth/cadastro/cadastro').then((c) => c.Cadastro),
   },
   {
-    path:'login',
+    path: 'login',
     loadComponent: () => import('./auth/login/login').then((c) => c.Login),
   },
   {
     path: 'categorias',
-    loadComponent: () => import('./categorias/shell/categorias-shell').then((l) => l.categoriasShell),
+    loadComponent: () =>
+      import('./categorias/shell/categorias-shell').then((l) => l.CategoriasShell),
     children: [
-
-    ]
-  }
+      { path: '', redirectTo: 'listar', pathMatch: 'full' },
+      { 
+        path: 'cadastrar', //Rota de cadastro
+        loadComponent: () =>
+          import('./categorias/cadastro/cadastro').then((l) => l.Cadastro)
+      }
+    ],
+  },
 ];
-
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,6 +39,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     { provide: URL_API, useValue: environment.urlApi },
     { provide: CHAVE_ARMAZENAMENTO, useValue: 'notekeeper.sessao' },
-    provideRouter(routes)
-  ]
+    provideRouter(routes),
+  ],
 };
