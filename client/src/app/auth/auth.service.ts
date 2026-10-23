@@ -35,7 +35,7 @@ export class AuthService {
   login(req: LoginRequest): Observable<TokenDto> {
     return this.http
       .post<TokenDto>(`${this.urlApi}/auth/login`, req)
-      .pipe(tap((token) => this.salvarSessao(token, req.email))); // tap é utilizado para gerar efeitos colaterais
+      .pipe(tap((token) => this.salvarSessao(token)));
   }
 
   encerrarSessao(): void {
@@ -45,8 +45,8 @@ export class AuthService {
     void this.router.navigateByUrl('/login');
   }
 
-  private salvarSessao(token: TokenDto, email: string): void {
-    const usuario: UsuarioDto = { id: token.usuarioId, email: email };
+  private salvarSessao(token: TokenDto): void {
+    const usuario: UsuarioDto = { id: token.usuarioId, nome: token.nome, email: token.email };
 
     const sessao: SessaoAutenticada = {
       token,
@@ -66,9 +66,13 @@ export class AuthService {
       const sessaoAnterior = JSON.parse(dadosArmazenados) as SessaoPersistidaAnteriormente;
 
       const token = sessaoAnterior.token;
-      const usuario = sessaoAnterior.usuario;
+      const usuarioAnterior = sessaoAnterior.usuario;
+      const usuario = usuarioAnterior && {
+        ...usuarioAnterior,
+        nome: usuarioAnterior.nome || token?.nome || '',
+      };
 
-      if (!token || !usuario) {
+      if (!token || !usuario || !usuario.nome) {
         localStorage.removeItem(this.chaveArmazenamento);
         return null;
       }
@@ -87,7 +91,7 @@ export class AuthService {
 
       const sessao: SessaoAutenticada = { token, usuario };
 
-      if (!sessaoAnterior.usuario) {
+      if (!usuarioAnterior?.nome) {
         localStorage.setItem(this.chaveArmazenamento, JSON.stringify(sessao));
       }
 

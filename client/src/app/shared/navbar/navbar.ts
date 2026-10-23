@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   imports: [],
@@ -6,6 +7,8 @@ import { Component, signal } from '@angular/core';
   templateUrl: './navbar.html',
 })
 export class Navbar {
+  protected readonly authService = inject(AuthService);
+  protected readonly sessao = this.authService.sessao;
   protected readonly menuOpen = signal(false);
 
   protected closeMenu(): void {

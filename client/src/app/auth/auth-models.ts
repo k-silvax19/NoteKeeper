@@ -9,6 +9,7 @@ export interface CadastroConcluidoNavigationState {
 }
 
 export interface UsuarioDto {
+  readonly nome: string;
   readonly id: string;
   readonly email: string;
 }
@@ -19,6 +20,8 @@ export interface LoginRequest {
 }
 
 export interface TokenDto {
+  readonly nome: string;
+  readonly email: string;
   readonly usuarioId: string;
   readonly accessToken: string;
   readonly dataExpiracaoEmUtc: string;
