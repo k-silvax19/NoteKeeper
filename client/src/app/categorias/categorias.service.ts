@@ -22,4 +22,8 @@ export class CategoriasService {
   obterPorId(CategoriaId: string): Observable<CategoriasDto> {
     return this.http.get<CategoriasDto>(`${this.urlApi}/categorias/${CategoriaId}`);
   }
+
+  excluir(CategoriaId: string): Observable<void> {
+    return this.http.delete<void>(`${this.urlApi}/categorias/${CategoriaId}`);
+  }
 }

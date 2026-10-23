@@ -25,6 +25,10 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'listar', pathMatch: 'full' },
       {
+        path: 'excluir/:id',
+        loadComponent: () => import('./categorias/excluir/excluir').then((l) => l.Excluir),
+      },
+      {
         path: 'listar',
         loadComponent: () => import('./categorias/listar/listar').then((l) => l.Listar)
       },
