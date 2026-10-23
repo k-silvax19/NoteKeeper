@@ -18,6 +18,13 @@ export const routes: Routes = [
     path:'login',
     loadComponent: () => import('./auth/login/login').then((c) => c.Login),
   },
+  {
+    path: 'categorias',
+    loadComponent: () => import('./categorias/shell/categorias-shell').then((l) => l.categoriasShell),
+    children: [
+
+    ]
+  }
 ];
 
 
