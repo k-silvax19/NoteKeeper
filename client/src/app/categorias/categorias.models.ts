@@ -1,8 +1,8 @@
 export interface CategoriasDto {
     readonly id: string,
-    readonly nome: string
+    readonly titulo: string
 }
 
 export interface CriarCategoriasRequest {
-    readonly nome: string
+    readonly titulo: string
 }

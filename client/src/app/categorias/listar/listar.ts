@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CursosService } from '../categorias.service';
+import { CategoriasService } from '../categorias.service';
 import { CategoriasDto } from '../categorias.models';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiValidationProblemDetails } from '../../auth/auth-models';
@@ -11,7 +11,7 @@ import { ApiValidationProblemDetails } from '../../auth/auth-models';
   templateUrl: './listar.html',
 })
 export class Listar {
-  private readonly categoriasService = inject(CursosService);
+  private readonly categoriasService = inject(CategoriasService);
 
   protected readonly categorias = signal<readonly CategoriasDto[]>([]);
   protected readonly mensagemErro = signal('');

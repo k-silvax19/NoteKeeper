@@ -6,9 +6,8 @@ import { inject, Service } from '@angular/core';
 import { URL_API } from '../auth/auth.tokens';
 import { CategoriasDto, CriarCategoriasRequest } from './categorias.models';
 
-
 @Service()
-export class CursosService {
+export class CategoriasService {
   private readonly http = inject(HttpClient);
   private readonly urlApi = inject(URL_API);
 
