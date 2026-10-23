@@ -24,6 +24,10 @@ export const routes: Routes = [
       import('./categorias/shell/categorias-shell').then((l) => l.CategoriasShell),
     children: [
       { path: '', redirectTo: 'listar', pathMatch: 'full' },
+      {
+        path: 'listar',
+        loadComponent: () => import('./categorias/listar/listar').then((l) => l.Listar)
+      },
       { 
         path: 'cadastrar', //Rota de cadastro
         loadComponent: () =>
