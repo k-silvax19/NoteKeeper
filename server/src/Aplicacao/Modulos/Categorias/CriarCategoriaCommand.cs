@@ -6,7 +6,7 @@ using NoteKeeper.Dominio.Modulos.Categorias;
 
 namespace NoteKeeper.Aplicacao.Modulos.Categorias;
 
-public sealed record CriarCategoriaCommand(Guid UsuarioId, string? Titulo)
+public sealed record CriarCategoriaCommand(Guid UsuarioId, string? Titulo, string? Icone = null)
     : IRequest<Result<CategoriaDto>>;
 
 public sealed class CriarCategoriaCommandHandler(IRepositorioCategoria repositorio)
@@ -14,7 +14,7 @@ public sealed class CriarCategoriaCommandHandler(IRepositorioCategoria repositor
 {
     public async Task<Result<CategoriaDto>> Handle(CriarCategoriaCommand command, CancellationToken ct)
     {
-        var categoria = new Categoria(command.UsuarioId, command.Titulo ?? string.Empty);
+        var categoria = new Categoria(command.UsuarioId, command.Titulo ?? string.Empty, command.Icone);
         var erros = categoria.Validar();
 
         if (erros.Count > 0)

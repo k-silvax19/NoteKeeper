@@ -10,6 +10,11 @@ public sealed class CategoriaConfiguration : IEntityTypeConfiguration<Categoria>
     {
         builder.HasKey(categoria => categoria.Id);
 
+        builder.Property(categoria => categoria.Icone)
+            .HasMaxLength(20)
+            .HasDefaultValue("pasta")
+            .IsRequired();
+
         builder.Property(categoria => categoria.Titulo)
             .HasMaxLength(Categoria.TamanhoMaximoTitulo)
             .IsRequired();

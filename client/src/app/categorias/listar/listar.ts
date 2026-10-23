@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { CategoriaIcone } from '../categoria-icone';
 import { RouterLink } from '@angular/router';
 import { CategoriasService } from '../categorias.service';
 import { CategoriasDto } from '../categorias.models';
@@ -6,7 +7,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiValidationProblemDetails } from '../../auth/auth-models';
 
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, CategoriaIcone],
   selector: 'app-listar',
   templateUrl: './listar.html',
 })

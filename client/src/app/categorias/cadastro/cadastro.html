@@ -48,6 +48,21 @@
           </p>
         }
 
+        <fieldset class="mt-6">
+          <legend class="mb-3 text-sm font-semibold">?cone da categoria</legend>
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            @for (opcao of icones; track opcao.valor) {
+              <label class="relative cursor-pointer">
+                <input type="radio" [value]="opcao.valor" [formField]="formularioCategoria.icone" class="peer sr-only" />
+                <span class="flex items-center gap-3 rounded-xl border border-[#d9dfd5] p-3 text-sm text-[#64766a] peer-checked:border-[#2e543f] peer-checked:bg-[#e8efdf] peer-checked:font-semibold peer-checked:text-[#253c32] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#638365] peer-disabled:opacity-60">
+                  <app-categoria-icone [icone]="opcao.valor" />
+                  {{ opcao.nome }}
+                </span>
+              </label>
+            }
+          </div>
+        </fieldset>
+
         <div class="mt-8 flex flex-col-reverse gap-3 border-t border-[#e4e7de] pt-6 sm:flex-row sm:justify-end">
           <button
             type="button"

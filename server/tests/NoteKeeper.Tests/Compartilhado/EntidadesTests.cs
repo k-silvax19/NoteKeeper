@@ -6,6 +6,33 @@ namespace NoteKeeper.Tests.Compartilhado;
 
 public sealed class EntidadesTests
 {
+    [Theory]
+    [InlineData("pasta")]
+    [InlineData("livro")]
+    [InlineData("maleta")]
+    [InlineData("casa")]
+    [InlineData("estrela")]
+    [InlineData("coracao")]
+    public void Categoria_AceitaIconesDisponiveis(string icone)
+    {
+        var categoria = new Categoria(Guid.NewGuid(), "Trabalho", icone);
+        Assert.Equal(icone, categoria.Icone);
+        Assert.Empty(categoria.Validar());
+    }
+
+    [Fact]
+    public void Categoria_UsaPastaPorPadrao()
+    {
+        Assert.Equal("pasta", new Categoria(Guid.NewGuid(), "Trabalho").Icone);
+    }
+
+    [Fact]
+    public void Categoria_RejeitaIconeDesconhecido()
+    {
+        var categoria = new Categoria(Guid.NewGuid(), "Trabalho", "invalido");
+        Assert.Contains(categoria.Validar(), erro => erro.Campo == "icone");
+    }
+
     [Fact]
     public void Categoria_AplicaTrimEValidacaoDeTitulo()
     {

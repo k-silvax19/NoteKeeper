@@ -7,7 +7,7 @@ using NoteKeeper.Aplicacao.Modulos.Categorias;
 
 namespace NoteKeeper.Api.Modulos.Categorias;
 
-public sealed record CategoriaRequest(string? Titulo);
+public sealed record CategoriaRequest(string? Titulo, string? Icone = null);
 
 [ApiController]
 [Route("categorias")]
@@ -32,7 +32,7 @@ public sealed class CategoriasController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Criar(CategoriaRequest request, CancellationToken ct)
     {
-        var resultado = await mediator.Send(new CriarCategoriaCommand(UserId(), request.Titulo), ct);
+        var resultado = await mediator.Send(new CriarCategoriaCommand(UserId(), request.Titulo, request.Icone), ct);
 
         if (resultado.IsFailed) return this.ResultProblem(resultado);
 
@@ -42,7 +42,7 @@ public sealed class CategoriasController(IMediator mediator) : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Atualizar(Guid id, CategoriaRequest request, CancellationToken ct)
     {
-        var command = new AtualizarCategoriaCommand(UserId(), id, request.Titulo);
+        var command = new AtualizarCategoriaCommand(UserId(), id, request.Titulo, request.Icone);
 
         var result = await mediator.Send(command, ct);
 

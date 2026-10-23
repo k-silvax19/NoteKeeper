@@ -1,6 +1,6 @@
 namespace NoteKeeper.Aplicacao.Compartilhado;
 
-public sealed record CategoriaDto(Guid Id, string Titulo);
+public sealed record CategoriaDto(Guid Id, string Titulo, string Icone = "pasta");
 
 public sealed record NotaDto(
     Guid Id,

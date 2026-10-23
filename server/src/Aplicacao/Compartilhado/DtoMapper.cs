@@ -7,7 +7,7 @@ public static class DtoMapper
 {
     public static CategoriaDto ToDto(Categoria categoria)
     {
-        return new CategoriaDto(categoria.Id, categoria.Titulo);
+        return new CategoriaDto(categoria.Id, categoria.Titulo, categoria.Icone);
     }
 
     public static NotaDto ToDto(Nota nota)

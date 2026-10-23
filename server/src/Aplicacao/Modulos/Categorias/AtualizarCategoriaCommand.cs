@@ -6,7 +6,7 @@ using NoteKeeper.Dominio.Modulos.Categorias;
 
 namespace NoteKeeper.Aplicacao.Modulos.Categorias;
 
-public sealed record AtualizarCategoriaCommand(Guid UsuarioId, Guid Id, string? Titulo)
+public sealed record AtualizarCategoriaCommand(Guid UsuarioId, Guid Id, string? Titulo, string? Icone = null)
     : IRequest<Result<CategoriaDto>>;
 
 public sealed class AtualizarCategoriaCommandHandler(IRepositorioCategoria repositorio)
@@ -21,6 +21,7 @@ public sealed class AtualizarCategoriaCommandHandler(IRepositorioCategoria repos
         }
 
         categoria.AlterarTitulo(command.Titulo ?? string.Empty);
+        if (command.Icone is not null) categoria.AlterarIcone(command.Icone);
         var erros = categoria.Validar();
 
         if (erros.Count > 0)

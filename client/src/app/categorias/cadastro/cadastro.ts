@@ -6,12 +6,15 @@ import { CriarCategoriasRequest } from '../categorias.models';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiValidationProblemDetails } from '../../auth/auth-models';
 
+import { CategoriaIcone, ICONES_CATEGORIA } from '../categoria-icone';
+
 export interface CategoriaFormModel {
   readonly titulo: string;
+  readonly icone: string;
 }
 
 @Component({
-  imports: [FormField, RouterLink],
+  imports: [FormField, RouterLink, CategoriaIcone],
   selector: 'app-cadastro',
   templateUrl: './cadastro.html',
 })
@@ -19,11 +22,14 @@ export class Cadastro {
   private readonly categoriasService = inject(CategoriasService);
   private readonly router = inject(Router);
 
+  protected readonly icones = ICONES_CATEGORIA;
+
   protected readonly enviandoFormulario = signal(false);
   protected readonly mensagemErro = signal('');
 
   protected readonly modeloCategoria = signal<CategoriaFormModel>({
     titulo: '',
+    icone: 'pasta',
   });
   protected readonly formularioCategoria = form(this.modeloCategoria, (modelo) => {
     required(modelo.titulo, { message: 'Informe o título da categoria.' });
@@ -45,6 +51,7 @@ export class Cadastro {
 
     const requisicao: CriarCategoriasRequest = {
       titulo: modelo.titulo.trim(),
+      icone: modelo.icone,
     };
 
     this.enviandoFormulario.set(true);
