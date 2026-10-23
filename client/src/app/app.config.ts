@@ -1,7 +1,8 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, Routes } from '@angular/router';
 import { CHAVE_ARMAZENAMENTO, URL_API } from './auth/auth.tokens';
+import { authInterceptor } from './auth/auth.interceptor';
 import { environment } from './environments/environment';
 
 export const routes: Routes = [
@@ -23,7 +24,7 @@ export const routes: Routes = [
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     { provide: URL_API, useValue: environment.urlApi },
     { provide: CHAVE_ARMAZENAMENTO, useValue: 'notekeeper.sessao' },
     provideRouter(routes)
