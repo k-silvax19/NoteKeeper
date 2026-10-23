@@ -1,7 +1,7 @@
 import { Component, inject, model, signal } from '@angular/core';
 import { CategoriasService } from '../categorias.service';
-import { Router } from '@angular/router';
-import { form, maxLength, min, minLength, required } from '@angular/forms/signals';
+import { Router, RouterLink } from '@angular/router';
+import { FormField, form, maxLength, min, minLength, required } from '@angular/forms/signals';
 import { CriarCategoriasRequest } from '../categorias.models';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiValidationProblemDetails } from '../../auth/auth-models';
@@ -11,7 +11,7 @@ export interface CategoriaFormModel {
 }
 
 @Component({
-  imports: [],
+  imports: [FormField, RouterLink],
   selector: 'app-cadastro',
   templateUrl: './cadastro.html',
 })
