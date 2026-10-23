@@ -23,14 +23,25 @@
           Uma ideia, um lembrete, um plano para amanhã. Dê um lugar para tudo o que você não quer
           esquecer.
         </p>
-        <a
-          class="inline-flex items-center gap-7 rounded-lg bg-[#2e543f] px-6 py-4 text-[13px] font-semibold text-white hover:bg-[#1e3e2c]"
-          routerLink="/login"
-          >Conheça o NoteKeeper <span aria-hidden="true">↗</span></a
-        >
-        <span class="mt-4 block text-[11px] text-[#727971]"
-          >Simples de organizar. Fácil de encontrar.</span
-        >
+        @if (sessao(); as sessao) {
+          <a
+            class="inline-flex items-center gap-7 rounded-lg bg-[#2e543f] px-6 py-4 text-[13px] font-semibold text-white hover:bg-[#1e3e2c]"
+            routerLink="/notas"
+            >Acesse o quadro de notas <span aria-hidden="true">↗</span></a
+          >
+          <span class="mt-4 block text-[11px] text-[#727971]"
+            >Conectado como <strong>{{ sessao.usuario.email }}</strong></span
+          >
+        } @else {
+          <a
+            class="inline-flex items-center gap-7 rounded-lg bg-[#2e543f] px-6 py-4 text-[13px] font-semibold text-white hover:bg-[#1e3e2c]"
+            routerLink="/login"
+            >Conheça o NoteKeeper <span aria-hidden="true">↗</span></a
+          >
+          <span class="mt-4 block text-[11px] text-[#727971]"
+            >Simples de organizar. Fácil de encontrar.</span
+          >
+        }
       </div>
       <div
         class="relative isolate mx-auto mt-5 h-[370px] w-full max-w-[440px] md:mt-0 md:h-[400px]"

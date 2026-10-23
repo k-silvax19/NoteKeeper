@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Navbar } from '../shared/navbar/navbar';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   imports: [Navbar, RouterLink],
@@ -8,6 +9,12 @@ import { RouterLink } from '@angular/router';
   templateUrl: './home.html',
 })
 export class Home {
+
+  protected readonly authService = inject(AuthService);
+  protected readonly sessao = this.authService.sessao;
+  protected readonly menuOpen = signal(false);
+
+
   protected readonly selectedCategory = signal('Todas');
   protected readonly categories = ['Todas', 'Pessoal', 'Estudos', 'Trabalho'];
   protected readonly notes = [
