@@ -23,7 +23,7 @@ interface CadastroFormModel {
 }
 
 @Component({
-  imports: [AuthShell, FormField, RouterLink, Navbar],
+  imports: [AuthShell, FormField, RouterLink],
   selector: 'app-cadastro',
   templateUrl: './cadastro.html',
 })
