@@ -13,11 +13,14 @@ import { ApiValidationProblemDetails } from '../../auth/auth-models';
 })
 export class ExcluirNotas {
   private readonly notasService = inject(NotasService);
+
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly nota = signal<NotasDto | null>(null);
+  
   protected readonly mensagemErro = signal('');
+
   protected readonly carregando = signal(true);
   protected readonly enviandoFormulario = signal(false);
 

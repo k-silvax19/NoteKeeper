@@ -24,17 +24,22 @@ export interface EditarNotasFormModel {
 export class EditarNotas {
   private readonly notasService = inject(NotasService);
   private readonly categoriasService = inject(CategoriasService);
+
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+
   private readonly notaId = this.route.snapshot.paramMap.get('id');
 
   protected readonly carregando = signal(true);
   protected readonly notaCarregada = signal(false);
+
   protected readonly enviandoFormulario = signal(false);
   protected readonly mensagemErro = signal('');
   protected readonly categorias = signal<readonly CategoriasDto[]>([]);
+
   protected readonly carregandoCategorias = signal(true);
   protected readonly mensagemErroCategorias = signal('');
+
   private readonly statusAtual = signal<StatusNota | null>(null);
 
   protected readonly modeloNotas = signal<EditarNotasFormModel>({
@@ -63,6 +68,7 @@ export class EditarNotas {
 
     this.carregando.set(true);
     this.notaCarregada.set(false);
+
     this.mensagemErro.set('');
     this.notasService.obterPorId(this.notaId).subscribe({
       next: (nota) => {
@@ -75,6 +81,7 @@ export class EditarNotas {
         this.notaCarregada.set(true);
         this.carregando.set(false);
       },
+
       error: (resposta: HttpErrorResponse) => {
         this.mensagemErro.set(this.obterMensagemErroApi(resposta));
         this.carregando.set(false);
@@ -85,6 +92,7 @@ export class EditarNotas {
   carregarCategorias(): void {
     this.carregandoCategorias.set(true);
     this.mensagemErroCategorias.set('');
+
     this.categoriasService.listar().subscribe({
       next: (categorias) => {
         this.categorias.set(categorias);
@@ -122,6 +130,7 @@ export class EditarNotas {
       titulo: modelo.titulo.trim(),
       descricao: modelo.descricao.trim(),
     }));
+
     const formulario = this.formularioNotas();
     if (formulario.invalid()) {
       formulario.markAsTouched();
@@ -129,6 +138,7 @@ export class EditarNotas {
     }
 
     const modelo = this.modeloNotas();
+
     const requisicao: EditarNotasRequest = {
       titulo: modelo.titulo,
       descricao: modelo.descricao || null,
@@ -138,6 +148,7 @@ export class EditarNotas {
 
     this.enviandoFormulario.set(true);
     this.mensagemErro.set('');
+
     this.notasService.editar(this.notaId, requisicao).subscribe({
       next: () => {
         void this.router.navigateByUrl('/notas/listar');
@@ -151,6 +162,7 @@ export class EditarNotas {
 
   private obterMensagemErroApi(resposta: HttpErrorResponse): string {
     const problem = resposta.error as ApiValidationProblemDetails | null;
+
     if (problem?.errors) {
       const mensagens = Object.values(problem.errors).flat();
       if (mensagens.length > 0) return mensagens.join('\n');

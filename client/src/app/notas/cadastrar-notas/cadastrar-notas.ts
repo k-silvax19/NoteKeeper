@@ -28,8 +28,10 @@ export class CadastrarNotas {
 
   protected readonly enviandoFormulario = signal(false);
   protected readonly mensagemErro = signal('');
+
   protected readonly categorias = signal<readonly CategoriasDto[]>([]);
   protected readonly carregandoCategorias = signal(true);
+
   protected readonly mensagemErroCategorias = signal('');
 
   protected readonly modeloNotas = signal<NotasFormModel>({
@@ -125,5 +127,5 @@ export class CadastrarNotas {
 
     return problem?.detail ?? 'Não foi possível cadastrar a nota. Tente novamente em instantes.';
   }
-  
+
 }
