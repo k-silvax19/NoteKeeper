@@ -3,6 +3,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter, Routes } from '@angular/router';
 import { CHAVE_ARMAZENAMENTO, URL_API } from './auth/auth.tokens';
 import { authInterceptor } from './auth/auth.interceptor';
+import { authGuard, visitanteGuard } from './auth/auth.guard';
 import { environment } from './environments/environment';
 
 export const routes: Routes = [
@@ -12,14 +13,18 @@ export const routes: Routes = [
   },
   {
     path: 'cadastro',
+    canActivate: [visitanteGuard],
     loadComponent: () => import('./auth/cadastro/cadastro').then((c) => c.Cadastro),
   },
   {
     path: 'login',
+    canActivate: [visitanteGuard],
     loadComponent: () => import('./auth/login/login').then((c) => c.Login),
   },
   {
     path: 'categorias',
+    canActivate: [authGuard],
+    canActivateChild: [authGuard],
     loadComponent: () =>
       import('./categorias/shell/categorias-shell').then((l) => l.CategoriasShell),
     children: [

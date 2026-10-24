@@ -28,6 +28,22 @@ export class AuthService {
   private readonly sessaoState = signal<SessaoAutenticada | null>(this.lerSessao());
   readonly sessao = this.sessaoState.asReadonly();
 
+  estaAutenticado(): boolean {
+    const sessao = this.sessaoState();
+
+    if (!sessao) return false;
+
+    const expiracao = new Date(sessao.token.dataExpiracaoEmUtc).getTime();
+
+    if (sessao.token.accessToken && Number.isFinite(expiracao) && expiracao > Date.now()) {
+      return true;
+    }
+
+    localStorage.removeItem(this.chaveArmazenamento);
+    this.sessaoState.set(null);
+    return false;
+  }
+
   cadastrar(req: CadastroRequest): Observable<UsuarioDto> {
     return this.http.post<UsuarioDto>(`${this.urlApi}/auth/cadastro`, req);
   }
