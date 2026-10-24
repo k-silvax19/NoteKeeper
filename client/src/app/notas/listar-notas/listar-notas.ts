@@ -63,7 +63,7 @@ export class ListarNotas {
   protected filtrar(id?: string): void {
     if (this.carregando()) return;
     this.selecionadas.update((atuais) =>
-      !id ? [] : atuais.includes(id) ? atuais.filter((atual) => atual !== id) : [...atuais, id], //Filtro de 
+      !id ? [] : atuais.includes(id) ? atuais.filter((atual) => atual !== id) : [...atuais, id], //Filtro de notas
     );
     this.carregarNotas();
   }

@@ -1,1 +1,160 @@
-<p>cadastrar-notas works!</p>
+<section
+  id="conteudo"
+  aria-labelledby="titulo-cadastro"
+  class="min-h-[calc(100vh-88px)] bg-[#1f1d14] py-10 text-[#dedbd2] sm:py-14 [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-4 [&_a]:focus-visible:outline-[#638365] [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-4 [&_button]:focus-visible:outline-[#638365]"
+>
+  <div class="mx-auto w-[calc(100%-36px)] max-w-[720px] sm:w-[calc(100%-64px)]">
+    <a
+      routerLink="/notas/listar"
+      class="inline-flex items-center gap-2 rounded text-sm font-semibold text-[#bdb7a5] hover:text-[#a7bf98]"
+    >
+      <svg lucideArrowLeft class="size-4" aria-hidden="true"></svg> Voltar para notas
+    </a>
+    <header class="my-8">
+      <p class="mb-2 text-xs font-bold tracking-widest text-[#bdb7a5] uppercase">
+        Suas ideias em ordem
+      </p>
+      <h1 id="titulo-cadastro" class="text-3xl font-semibold tracking-tight sm:text-4xl">
+        Cadastrar nota
+      </h1>
+      <p class="mt-3 text-sm leading-relaxed text-[#bdb7a5]">
+        Guarde uma ideia, um plano ou um lembrete. Sua nova nota será criada como ativa.
+      </p>
+    </header>
+    <form
+      (submit)="cadastrarNotas($event)"
+      novalidate
+      [attr.aria-busy]="enviandoFormulario()"
+      class="rounded-2xl border border-[#45483b] bg-[#27291f] p-6 shadow-sm sm:p-8"
+    >
+      @if (mensagemErro()) {
+        <div
+          role="alert"
+          class="mb-6 rounded-xl border border-[#794a4a] bg-[#3b2424] px-4 py-3 text-sm whitespace-pre-line text-[#ffb4b4]"
+        >
+          {{ mensagemErro() }}
+        </div>
+      }
+      <fieldset [disabled]="enviandoFormulario()" class="min-w-0">
+        <label for="nota-titulo" class="mb-2 block text-sm font-semibold"
+          >Título da nota <span class="font-normal text-[#bdb7a5]">(obrigatório)</span></label
+        >
+        <input
+          id="nota-titulo"
+          type="text"
+          autocomplete="off"
+          placeholder="Ex.: Ideias para o próximo projeto"
+          [formField]="formularioNotas.titulo"
+          [attr.aria-invalid]="
+            formularioNotas.titulo().touched() && formularioNotas.titulo().invalid()
+          "
+          [attr.aria-describedby]="
+            formularioNotas.titulo().touched() && formularioNotas.titulo().invalid()
+              ? 'titulo-ajuda titulo-erro'
+              : 'titulo-ajuda'
+          "
+          class="w-full rounded-xl border border-[#45483b] bg-[#25271f] px-4 py-3.5 text-base outline-none placeholder:text-[#a29f90] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 disabled:opacity-70 aria-[invalid=true]:border-rose-600"
+        />
+        <p id="titulo-ajuda" class="mt-2 text-xs leading-5 text-[#bdb7a5]">
+          Escolha um título único entre 2 e 100 caracteres.
+        </p>
+        @if (formularioNotas.titulo().touched() && formularioNotas.titulo().invalid()) {
+          <p id="titulo-erro" class="mt-2 text-sm text-[#ffb4b4]" aria-live="polite">
+            {{ formularioNotas.titulo().errors()[0].message }}
+          </p>
+        }
+
+        <label for="nota-descricao" class="mt-6 mb-2 block text-sm font-semibold"
+          >Descrição <span class="font-normal text-[#bdb7a5]">(opcional)</span></label
+        >
+        <textarea
+          id="nota-descricao"
+          rows="5"
+          placeholder="Escreva o que você quer lembrar…"
+          [formField]="formularioNotas.descricao"
+          [attr.aria-invalid]="
+            formularioNotas.descricao().touched() && formularioNotas.descricao().invalid()
+          "
+          [attr.aria-describedby]="
+            formularioNotas.descricao().touched() && formularioNotas.descricao().invalid()
+              ? 'descricao-ajuda descricao-erro'
+              : 'descricao-ajuda'
+          "
+          class="w-full resize-y rounded-xl border border-[#45483b] bg-[#25271f] px-4 py-3.5 text-base outline-none placeholder:text-[#a29f90] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 disabled:opacity-70 aria-[invalid=true]:border-rose-600"
+        ></textarea>
+        <p id="descricao-ajuda" class="mt-2 text-xs leading-5 text-[#bdb7a5]">
+          {{ modeloNotas().descricao.length }}/300 caracteres.
+        </p>
+        @if (formularioNotas.descricao().touched() && formularioNotas.descricao().invalid()) {
+          <p id="descricao-erro" class="mt-2 text-sm text-[#ffb4b4]" aria-live="polite">
+            {{ formularioNotas.descricao().errors()[0].message }}
+          </p>
+        }
+
+        <fieldset class="mt-6">
+          <legend class="mb-3 text-sm font-semibold">
+            Categorias <span class="font-normal text-[#bdb7a5]">(opcionais)</span>
+          </legend>
+          @if (carregandoCategorias()) {
+            <p role="status" class="text-sm text-[#bdb7a5]">Carregando categorias…</p>
+          } @else if (mensagemErroCategorias()) {
+            <div role="alert" class="text-sm text-[#ffb4b4]">
+              <p>{{ mensagemErroCategorias() }}</p>
+              <button
+                type="button"
+                (click)="carregarCategorias()"
+                class="mt-2 cursor-pointer rounded-lg border border-[#794a4a] px-4 py-2"
+              >
+                Tentar novamente
+              </button>
+            </div>
+          } @else {
+            <div class="grid gap-3 sm:grid-cols-2">
+              @for (categoria of categorias(); track categoria.id) {
+                <label class="relative cursor-pointer">
+                  <input
+                    type="checkbox"
+                    [checked]="modeloNotas().categoriaIds.includes(categoria.id)"
+                    (change)="selecionarCategoria(categoria.id)"
+                    class="peer sr-only"
+                  />
+                  <span
+                    class="flex items-center gap-3 rounded-xl border border-[#45483b] p-3 text-sm text-[#bdb7a5] peer-checked:border-[#638365] peer-checked:bg-[#303c2c] peer-checked:font-semibold peer-checked:text-[#dedbd2] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#638365] peer-disabled:opacity-60"
+                  >
+                    <app-categoria-icone [icone]="categoria.icone" />
+                    <span class="min-w-0 wrap-anywhere">{{ categoria.titulo }}</span>
+                  </span>
+                </label>
+              } @empty {
+                <p class="text-sm text-[#bdb7a5]">
+                  Você ainda não tem categorias. Pode salvar sua nota sem selecionar nenhuma.
+                </p>
+              }
+            </div>
+          }
+        </fieldset>
+        <div
+          class="mt-8 flex flex-col-reverse gap-3 border-t border-[#45483b] pt-6 sm:flex-row sm:justify-end"
+        >
+          <button
+            type="button"
+            routerLink="/notas/listar"
+            class="cursor-pointer rounded-xl border border-[#45483b] px-5 py-3 text-sm font-semibold hover:bg-[#303528] disabled:cursor-wait disabled:opacity-70"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#2e543f] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1e3e2c] disabled:cursor-wait disabled:opacity-70"
+          >
+            <svg lucidePlus class="size-4" aria-hidden="true"></svg
+            >{{ enviandoFormulario() ? 'Cadastrando…' : 'Cadastrar nota' }}
+          </button>
+        </div>
+      </fieldset>
+      <p role="status" class="sr-only">
+        {{ enviandoFormulario() ? 'Cadastrando nota. Aguarde.' : '' }}
+      </p>
+    </form>
+  </div>
+</section>
