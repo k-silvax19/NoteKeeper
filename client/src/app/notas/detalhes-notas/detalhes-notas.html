@@ -50,41 +50,7 @@
           }
         </div>
       </fieldset>
-      <fieldset>
-        <legend class="mb-3 text-sm font-semibold">Categorias (opcionais)</legend>
-        @if (carregandoCategorias()) {
-          <p role="status" class="text-sm text-[#bdb7a5]">Carregando categorias…</p>
-        } @else if (erroCategorias()) {
-          <p role="alert" class="text-sm text-[#ffb4b4]">
-            Não foi possível carregar as categorias. As categorias atuais serão mantidas.
-          </p>
-          <button
-            type="button"
-            (click)="carregarCategorias()"
-            class="mt-3 cursor-pointer rounded-lg border border-[#45483b] px-4 py-2 text-sm"
-          >
-            Tentar novamente
-          </button>
-        } @else {
-          <div class="grid gap-3 sm:grid-cols-2">
-            @for (categoria of categorias(); track categoria.id) {
-              <label
-                class="flex cursor-pointer items-center gap-3 rounded-xl border border-[#45483b] p-3 text-sm has-checked:border-[#638365] has-checked:bg-[#303c2c]"
-              >
-                <input
-                  type="checkbox"
-                  [checked]="selecionadas().includes(categoria.id)"
-                  (change)="selecionarCategoria(categoria.id)"
-                  class="size-4 shrink-0 accent-[#638365]"
-                />
-                <span class="min-w-0 wrap-anywhere">{{ categoria.titulo }}</span>
-              </label>
-            } @empty {
-              <p class="text-sm text-[#bdb7a5]">Nenhuma categoria cadastrada.</p>
-            }
-          </div>
-        }
-      </fieldset>
+        
       <button
         type="submit"
         class="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#2e543f] px-5 py-3 text-sm font-semibold hover:bg-[#1e3e2c] disabled:cursor-wait disabled:opacity-60"
