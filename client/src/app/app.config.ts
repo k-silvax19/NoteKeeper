@@ -36,6 +36,10 @@ export const routes: Routes = [
         path: 'cadastrar', //Rota de cadastro
         loadComponent: () => import('./categorias/cadastro/cadastro').then((l) => l.Cadastro),
       },
+      {
+        path: 'editar', //Rota de edição
+        loadComponent: () => import('./categorias/editar/editar').then((e) => e.Editar),
+      },
     ],
   },
 ];
