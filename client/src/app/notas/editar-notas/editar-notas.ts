@@ -13,7 +13,6 @@ import { LucideArrowLeft, LucideSave } from '@lucide/angular';
 export interface EditarNotasFormModel {
   readonly titulo: string;
   readonly descricao: string;
-  readonly status: StatusNota;
   readonly categoriaIds: readonly string[];
 }
 
@@ -36,12 +35,11 @@ export class EditarNotas {
   protected readonly categorias = signal<readonly CategoriasDto[]>([]);
   protected readonly carregandoCategorias = signal(true);
   protected readonly mensagemErroCategorias = signal('');
-  protected readonly statusDisponiveis: readonly StatusNota[] = ['Ativa', 'Arquivada'];
+  private readonly statusAtual = signal<StatusNota | null>(null);
 
   protected readonly modeloNotas = signal<EditarNotasFormModel>({
     titulo: '',
     descricao: '',
-    status: 'Ativa',
     categoriaIds: [],
   });
   protected readonly formularioNotas = form(this.modeloNotas, (modelo) => {
@@ -49,7 +47,6 @@ export class EditarNotas {
     minLength(modelo.titulo, 2, { message: 'O título deve conter no mínimo 2 caracteres.' });
     maxLength(modelo.titulo, 100, { message: 'O título pode ter no máximo 100 caracteres.' });
     maxLength(modelo.descricao, 300, { message: 'A descrição pode ter no máximo 300 caracteres.' });
-    required(modelo.status, { message: 'Informe o status da nota.' });
   });
 
   constructor() {
@@ -69,10 +66,10 @@ export class EditarNotas {
     this.mensagemErro.set('');
     this.notasService.obterPorId(this.notaId).subscribe({
       next: (nota) => {
+        this.statusAtual.set(nota.status);
         this.modeloNotas.set({
           titulo: nota.titulo,
           descricao: nota.descricao ?? '',
-          status: nota.status,
           categoriaIds: nota.categorias.map((categoria) => categoria.id),
         });
         this.notaCarregada.set(true);
@@ -117,6 +114,9 @@ export class EditarNotas {
     event.preventDefault();
     if (!this.notaId || !this.notaCarregada() || this.enviandoFormulario()) return;
 
+    const status = this.statusAtual();
+    if (!status) return;
+
     this.modeloNotas.update((modelo) => ({
       ...modelo,
       titulo: modelo.titulo.trim(),
@@ -132,7 +132,7 @@ export class EditarNotas {
     const requisicao: EditarNotasRequest = {
       titulo: modelo.titulo,
       descricao: modelo.descricao || null,
-      status: modelo.status,
+      status,
       categoriaIds: modelo.categoriaIds,
     };
 

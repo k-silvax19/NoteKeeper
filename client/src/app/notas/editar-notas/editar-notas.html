@@ -100,35 +100,7 @@
               </p>
             }
 
-            <fieldset class="mt-6" aria-describedby="status-ajuda">
-              <legend class="mb-3 text-sm font-semibold">
-                Status <span class="font-normal text-[#bdb7a5]">(obrigatório)</span>
-              </legend>
-              <div class="grid grid-cols-2 gap-3">
-                @for (status of statusDisponiveis; track status) {
-                  <label class="relative cursor-pointer">
-                    <input
-                      type="radio"
-                      [value]="status"
-                      [formField]="formularioNotas.status"
-                      class="peer sr-only"
-                    />
-                    <span
-                      class="block rounded-xl border border-[#45483b] p-3 text-center text-sm text-[#bdb7a5] peer-checked:border-[#638365] peer-checked:bg-[#303c2c] peer-checked:font-semibold peer-checked:text-[#dedbd2] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-[#638365] peer-disabled:opacity-60"
-                      >{{ status }}</span
-                    >
-                  </label>
-                }
-              </div>
-              <p id="status-ajuda" class="mt-2 text-xs leading-5 text-[#bdb7a5]">
-                Escolha se a nota está ativa ou arquivada.
-              </p>
-              @if (formularioNotas.status().touched() && formularioNotas.status().invalid()) {
-                <p class="mt-2 text-sm text-[#ffb4b4]" aria-live="polite">
-                  {{ formularioNotas.status().errors()[0].message }}
-                </p>
-              }
-            </fieldset>
+          
 
             <fieldset class="mt-6">
               <legend class="mb-3 text-sm font-semibold">
