@@ -25,18 +25,22 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'listar', pathMatch: 'full' },
       {
-        path: 'excluir/:id',
+        path: 'excluir/:id', //rota de exclusão
         loadComponent: () => import('./categorias/excluir/excluir').then((l) => l.Excluir),
       },
       {
-        path: 'listar',
-        loadComponent: () => import('./categorias/listar/listar').then((l) => l.Listar)
+        path: 'listar', //rota de listagem
+        loadComponent: () => import('./categorias/listar/listar').then((l) => l.Listar),
       },
-      { 
-        path: 'cadastrar', //Rota de cadastro
+      {
+        path: 'detalhes/:id',
         loadComponent: () =>
-          import('./categorias/cadastro/cadastro').then((l) => l.Cadastro)
-      }
+          import('./categorias/detalhes/datalhes').then((c) => c.Datalhes),
+      },
+      {
+        path: 'cadastrar', //Rota de cadastro
+        loadComponent: () => import('./categorias/cadastro/cadastro').then((l) => l.Cadastro),
+      },
     ],
   },
 ];
