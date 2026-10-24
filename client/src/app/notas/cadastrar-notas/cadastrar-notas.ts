@@ -125,4 +125,5 @@ export class CadastrarNotas {
 
     return problem?.detail ?? 'Não foi possível cadastrar a nota. Tente novamente em instantes.';
   }
+  
 }

@@ -9,6 +9,14 @@ export class NotasService {
   private readonly http = inject(HttpClient);
   private readonly urlApi = inject(URL_API);
 
+  obterPorId(notaId: string): Observable<NotasDto> {
+    return this.http.get<NotasDto>(`${this.urlApi}/notas/${notaId}`);
+  }
+
+  excluir(notaId: string): Observable<void> {
+    return this.http.delete<void>(`${this.urlApi}/notas/${notaId}`);
+  }
+
   cadastrar(requisicao: CriarNotasRequest): Observable<NotasDto> {
     return this.http.post<NotasDto>(`${this.urlApi}/notas`, requisicao);
   }

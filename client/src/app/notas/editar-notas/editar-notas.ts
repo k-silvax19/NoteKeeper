@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
   selector: 'app-editar-notas',
   templateUrl: './editar-notas.html',
 })
-export class EditarNotas {}
+export class EditarNotas {
+  
+}
