@@ -3,7 +3,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter, Routes } from '@angular/router';
 import { CHAVE_ARMAZENAMENTO, URL_API } from './auth/auth.tokens';
 import { authInterceptor } from './auth/auth.interceptor';
-import { isAnonymousGuard } from './auth/auth.guard';
+import { isAnonymousGuard, isAuthenticatedGuard } from './auth/auth.guard';
 import { environment } from './environments/environment';
 
 export const routes: Routes = [
@@ -23,8 +23,8 @@ export const routes: Routes = [
   },
   {
     path: 'categorias',
-    canActivate: [isAnonymousGuard],
-    canActivateChild: [isAnonymousGuard],
+    canActivate: [isAuthenticatedGuard],
+    canActivateChild: [isAuthenticatedGuard],
     loadComponent: () =>
       import('./categorias/shell/categorias-shell').then((l) => l.CategoriasShell),
     children: [

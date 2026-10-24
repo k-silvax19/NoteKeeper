@@ -7,7 +7,7 @@ export const isAnonymousGuard: CanActivateFn = (): true | UrlTree => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!authService.sessao()) return true;
+  if (!authService.estaAutenticado()) return true;
 
   return router.createUrlTree(['/']);
 };
@@ -16,7 +16,7 @@ export const isAuthenticatedGuard: CanActivateFn = (): true | UrlTree => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.sessao()) return true;
+  if (authService.estaAutenticado()) return true;
 
-  return router.createUrlTree(['/auth/login']);
+  return router.createUrlTree(['/login']);
 };
