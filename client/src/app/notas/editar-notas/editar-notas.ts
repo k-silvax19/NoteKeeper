@@ -1,12 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { form, maxLength, minLength, required } from '@angular/forms/signals';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormField, form, maxLength, minLength, required } from '@angular/forms/signals';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotasService } from '../notas.service';
 import { EditarNotasRequest, StatusNota } from '../notas-models';
 import { CategoriasService } from '../../categorias/categorias.service';
 import { CategoriasDto } from '../../categorias/categorias.models';
 import { ApiValidationProblemDetails } from '../../auth/auth-models';
+import { CategoriaIcone } from '../../categorias/categoria-icone';
+import { LucideArrowLeft, LucideSave } from '@lucide/angular';
 
 export interface EditarNotasFormModel {
   readonly titulo: string;
@@ -16,7 +18,7 @@ export interface EditarNotasFormModel {
 }
 
 @Component({
-  imports: [],
+  imports: [FormField, RouterLink, CategoriaIcone, LucideArrowLeft, LucideSave],
   selector: 'app-editar-notas',
   templateUrl: './editar-notas.html',
 })
