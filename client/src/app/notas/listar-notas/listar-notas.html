@@ -54,6 +54,23 @@
         Exibindo notas com todas as categorias selecionadas.
       </p>
     }
+    <div
+      class="mb-8 flex flex-wrap items-center gap-3"
+      role="group"
+      aria-label="Filtrar por status"
+    >
+      <span class="text-sm text-[#bdc8be]">Status</span>
+      @for (filtro of filtrosStatus; track filtro.valor) {
+        <button
+          type="button"
+          (click)="statusSelecionado.set(filtro.valor)"
+          [attr.aria-pressed]="statusSelecionado() === filtro.valor"
+          class="cursor-pointer rounded-xl border border-[#4f6a56] px-4 py-2 text-sm text-[#d2dbd3] hover:bg-[#3a5240] aria-pressed:bg-[#3a5240] aria-pressed:text-white"
+        >
+          {{ filtro.titulo }}
+        </button>
+      }
+    </div>
     <div [attr.aria-busy]="carregando()" aria-live="polite">
       @if (carregando()) {
         <div
@@ -79,9 +96,9 @@
         </div>
       } @else {
         <div class="grid grid-cols-1 gap-8 min-[600px]:grid-cols-2 min-[960px]:grid-cols-3">
-          @for (nota of notas(); track nota.id) {
+          @for (nota of notasFiltradas(); track nota.id) {
             <article
-              class="flex min-h-[280px] min-w-0 -rotate-1 flex-col rounded-sm bg-[#fdf3c8] bg-linear-135 from-white/20 via-transparent via-40% to-black/2 p-6 text-[#343a37] shadow-[2px_4px_10px_#0003,inset_0_1px_#fff6] transition-transform duration-300 wrap-anywhere nth-[3n+2]:rotate-1 nth-[3n+2]:bg-[#d3e4e0] nth-[3n]:-rotate-2 nth-[3n]:bg-[#f6d8d2] hover:-translate-y-1 hover:rotate-0 focus-within:-translate-y-1 focus-within:rotate-0 motion-reduce:transform-none motion-reduce:transition-none [&_a]:hover:underline [&_a]:underline-offset-4"
+              class="relative flex min-h-[280px] min-w-0 -rotate-1 flex-col rounded-sm bg-[#fdf3c8] bg-linear-135 from-white/20 via-transparent via-40% to-black/2 p-6 text-[#343a37] shadow-[2px_4px_10px_#0003,inset_0_1px_#fff6] transition-transform duration-300 wrap-anywhere nth-[3n+2]:rotate-1 nth-[3n+2]:bg-[#d3e4e0] nth-[3n]:-rotate-2 nth-[3n]:bg-[#f6d8d2] hover:-translate-y-1 hover:rotate-0 focus-within:-translate-y-1 focus-within:rotate-0 motion-reduce:transform-none motion-reduce:transition-none [&_a]:hover:underline [&_a]:underline-offset-4"
             >
               <div class="mb-4 flex flex-wrap gap-1.5">
                 @for (categoria of nota.categorias; track categoria.id) {
@@ -103,7 +120,15 @@
                 }
               </div>
               <h2 class="mb-3 font-['Caveat',cursive] text-3xl leading-tight font-bold">
-                <a [routerLink]="['/notas/editar', nota.id]">{{ nota.titulo }}</a>
+                <button
+                  type="button"
+                  (click)="abrirDetalhes(nota)"
+                  aria-haspopup="dialog"
+                  [attr.aria-label]="'Ver detalhes da nota ' + nota.titulo"
+                  class="cursor-pointer text-left after:absolute after:inset-0 after:rounded-sm"
+                >
+                  {{ nota.titulo }}
+                </button>
               </h2>
               @if (nota.descricao) {
                 <p
@@ -116,20 +141,7 @@
                 class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-black/5 pt-4 text-[11px] text-[#4b5951]"
               >
                 <time [attr.datetime]="nota.criadoEm">{{ formatarData(nota.criadoEm) }}</time>
-                <div
-                  class="flex gap-3 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:py-1.5"
-                >
-                  <a
-                    [routerLink]="['/notas/excluir', nota.id]"
-                    [attr.aria-label]="'Excluir nota ' + nota.titulo"
-                    ><svg lucideTrash2 class="size-4" aria-hidden="true"></svg>Excluir</a
-                  >
-                  <a
-                    [routerLink]="['/notas/editar', nota.id]"
-                    [attr.aria-label]="'Editar nota ' + nota.titulo"
-                    >Editar <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg
-                  ></a>
-                </div>
+                <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg>
               </footer>
             </article>
           } @empty {
@@ -138,23 +150,23 @@
             >
               <h2>
                 {{
-                  selecionadas().length
+                  selecionadas().length || statusSelecionado()
                     ? 'Nenhuma nota por aqui'
                     : 'Seu cantinho começa com uma ideia'
                 }}
               </h2>
               <p>
                 {{
-                  selecionadas().length
-                    ? 'Não encontramos notas com todas essas categorias.'
+                  selecionadas().length || statusSelecionado()
+                    ? 'Não encontramos notas com os filtros selecionados.'
                     : 'Guarde um pensamento, um plano ou um lembrete na sua primeira nota.'
                 }}
               </p>
-              @if (selecionadas().length) {
+              @if (selecionadas().length || statusSelecionado()) {
                 <button
                   class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] wrap-anywhere hover:bg-[#3a5240] hover:text-white aria-pressed:bg-[#3a5240] aria-pressed:text-white disabled:cursor-wait disabled:opacity-60"
                   type="button"
-                  (click)="filtrar()"
+                  (click)="limparFiltros()"
                 >
                   Limpar filtros
                 </button>
@@ -178,3 +190,18 @@
     </footer>
   </div>
 </section>
+
+<dialog
+  #modalDetalhes
+  aria-labelledby="titulo-detalhes"
+  (close)="notaSelecionada.set(null)"
+  class="fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%-36px)] max-w-[640px] overflow-y-auto rounded-2xl border border-[#45483b] bg-[#27291f] p-0 text-[#dedbd2] shadow-xl backdrop:bg-black/50 [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-4 [&_button]:focus-visible:outline-[#638365] [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-4 [&_a]:focus-visible:outline-[#638365]"
+>
+  @if (notaSelecionada(); as notaAtual) {
+    <app-detalhes-notas
+      [nota]="notaAtual"
+      (fechar)="fecharDetalhes()"
+      (salvo)="atualizarDetalhes()"
+    />
+  }
+</dialog>

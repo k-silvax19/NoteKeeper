@@ -1,1 +1,116 @@
-<p>detalhes-notas works!</p>
+<div class="p-6 sm:p-8">
+  <header class="mb-6 flex items-start justify-between gap-4">
+    <div class="min-w-0">
+      <p class="mb-2 text-xs font-semibold tracking-widest text-[#bdb7a5] uppercase">
+        Detalhes da nota
+      </p>
+      <h2 id="titulo-detalhes" class="text-2xl font-semibold wrap-anywhere">{{ nota().titulo }}</h2>
+    </div>
+    <button
+      type="button"
+      (click)="fechar.emit()"
+      aria-label="Fechar detalhes"
+      class="grid size-10 shrink-0 cursor-pointer place-items-center rounded-lg hover:bg-[#303c2c]"
+    >
+      <svg lucideX class="size-5" aria-hidden="true"></svg>
+    </button>
+  </header>
+  <p class="mb-6 text-sm leading-7 whitespace-pre-wrap text-[#bdb7a5] wrap-anywhere">
+    {{ nota().descricao || 'Sem descrição.' }}
+  </p>
+
+  <form (submit)="salvar($event)" [attr.aria-busy]="enviandoFormulario()">
+    @if (mensagemErro()) {
+      <p
+        role="alert"
+        class="mb-4 rounded-xl border border-[#794a4a] bg-[#3b2424] p-4 text-sm whitespace-pre-line text-[#ffb4b4]"
+      >
+        {{ mensagemErro() }}
+      </p>
+    }
+    <fieldset [disabled]="enviandoFormulario()" class="min-w-0">
+      <fieldset class="mb-6">
+        <legend class="mb-3 text-sm font-semibold">Status</legend>
+        <div class="flex flex-wrap gap-3">
+          @for (opcao of statusDisponiveis; track opcao) {
+            <label class="relative cursor-pointer">
+              <input
+                type="radio"
+                name="status-detalhes"
+                [value]="opcao"
+                [checked]="status() === opcao"
+                (change)="status.set(opcao)"
+                class="peer sr-only"
+              />
+              <span
+                class="block rounded-xl border border-[#45483b] px-4 py-3 text-sm peer-checked:border-[#638365] peer-checked:bg-[#303c2c] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-[#638365] peer-disabled:opacity-60"
+                >{{ opcao }}</span
+              >
+            </label>
+          }
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend class="mb-3 text-sm font-semibold">Categorias (opcionais)</legend>
+        @if (carregandoCategorias()) {
+          <p role="status" class="text-sm text-[#bdb7a5]">Carregando categorias…</p>
+        } @else if (erroCategorias()) {
+          <p role="alert" class="text-sm text-[#ffb4b4]">
+            Não foi possível carregar as categorias. As categorias atuais serão mantidas.
+          </p>
+          <button
+            type="button"
+            (click)="carregarCategorias()"
+            class="mt-3 cursor-pointer rounded-lg border border-[#45483b] px-4 py-2 text-sm"
+          >
+            Tentar novamente
+          </button>
+        } @else {
+          <div class="grid gap-3 sm:grid-cols-2">
+            @for (categoria of categorias(); track categoria.id) {
+              <label
+                class="flex cursor-pointer items-center gap-3 rounded-xl border border-[#45483b] p-3 text-sm has-checked:border-[#638365] has-checked:bg-[#303c2c]"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="selecionadas().includes(categoria.id)"
+                  (change)="selecionarCategoria(categoria.id)"
+                  class="size-4 shrink-0 accent-[#638365]"
+                />
+                <span class="min-w-0 wrap-anywhere">{{ categoria.titulo }}</span>
+              </label>
+            } @empty {
+              <p class="text-sm text-[#bdb7a5]">Nenhuma categoria cadastrada.</p>
+            }
+          </div>
+        }
+      </fieldset>
+      <button
+        type="submit"
+        class="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#2e543f] px-5 py-3 text-sm font-semibold hover:bg-[#1e3e2c] disabled:cursor-wait disabled:opacity-60"
+      >
+        <svg lucideSave class="size-4" aria-hidden="true"></svg
+        >{{ enviandoFormulario() ? 'Salvando…' : 'Salvar alterações' }}
+      </button>
+    </fieldset>
+    <p role="status" class="sr-only">
+      {{ enviandoFormulario() ? 'Salvando alterações. Aguarde.' : '' }}
+    </p>
+  </form>
+  <footer class="mt-6 flex flex-wrap justify-end gap-3 border-t border-[#45483b] pt-6">
+    @if (!enviandoFormulario()) {
+      <a
+        [routerLink]="['/notas/editar', nota().id]"
+        class="inline-flex items-center gap-2 rounded-xl border border-[#45483b] px-4 py-3 text-sm font-semibold hover:bg-[#303c2c]"
+      >
+        <svg lucidePencil class="size-4" aria-hidden="true"></svg>Editar nota
+      </a>
+      <a
+        [routerLink]="['/notas/excluir', nota().id]"
+        class="inline-flex items-center gap-2 rounded-xl bg-rose-700 px-4 py-3 text-sm font-semibold text-white hover:bg-rose-800"
+      >
+        <svg lucideTrash2 class="size-4" aria-hidden="true"></svg>Excluir nota
+      </a>
+    }
+  </footer>
+</div>
