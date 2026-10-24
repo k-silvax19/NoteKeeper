@@ -1,1 +1,180 @@
-<p>listar-notas works!</p>
+<section
+  id="conteudo"
+  class="mx-auto my-8 w-[calc(100%-24px)] max-w-5xl rounded-2xl bg-[#4a3320] p-3 font-['Inter',sans-serif] shadow-2xl sm:my-10 sm:w-[calc(100%-32px)] sm:p-5 [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-4 [&_a]:focus-visible:outline-[#a7bf98] [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-4 [&_button]:focus-visible:outline-[#a7bf98]"
+  aria-labelledby="titulo-notas"
+>
+  <div
+    class="rounded-xl border border-black/20 bg-[#2a3b2c] px-5 py-6 text-[#e8e8e8] shadow-[inset_0_0_40px_#0009] sm:p-10"
+  >
+    <header
+      class="mb-8 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center"
+    >
+      <div>
+        <h1 id="titulo-notas" class="flex items-center gap-3 text-xl font-medium tracking-wide">
+          <svg lucideList class="size-6 shrink-0" aria-hidden="true"></svg> Meu cantinho de ideias
+        </h1>
+        <p class="mt-2.5 text-sm text-[#bdc8be]">Um lugar para guardar o que importa.</p>
+      </div>
+      <a
+        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-[#4f6a56] bg-[#fdf3c8] px-5 py-2.5 text-sm font-semibold text-[#2a3b2c] hover:bg-[#fff8df]"
+        routerLink="/notas/cadastrar"
+        ><svg lucidePlus class="size-5" aria-hidden="true"></svg> Nova nota</a
+      >
+    </header>
+    <div class="mb-9 flex flex-wrap gap-3" role="group" aria-label="Filtrar por categorias">
+      <button
+        class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] wrap-anywhere hover:bg-[#3a5240] hover:text-white aria-pressed:bg-[#3a5240] aria-pressed:text-white disabled:cursor-wait disabled:opacity-60"
+        type="button"
+        [disabled]="carregando()"
+        [attr.aria-pressed]="selecionadas().length === 0"
+        (click)="filtrar()"
+      >
+        Todas
+      </button>
+      @for (categoria of categorias(); track categoria.id) {
+        <button
+          class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] wrap-anywhere hover:bg-[#3a5240] hover:text-white aria-pressed:bg-[#3a5240] aria-pressed:text-white disabled:cursor-wait disabled:opacity-60"
+          type="button"
+          [disabled]="carregando()"
+          [attr.aria-pressed]="selecionadas().includes(categoria.id)"
+          (click)="filtrar(categoria.id)"
+        >
+          {{ categoria.titulo }}
+        </button>
+      }
+    </div>
+    @if (erroCategorias()) {
+      <p class="-mt-4 mb-7 text-sm text-[#d2dbd3]" role="status">
+        Não foi possível carregar os filtros de categorias. Recarregue a página para tentar
+        novamente.
+      </p>
+    }
+    @if (selecionadas().length > 0) {
+      <p class="-mt-4 mb-7 text-sm text-[#d2dbd3]">
+        Exibindo notas com todas as categorias selecionadas.
+      </p>
+    }
+    <div [attr.aria-busy]="carregando()" aria-live="polite">
+      @if (carregando()) {
+        <div
+          class="min-h-[280px] px-3 py-15 text-center [&_h2]:mb-3 [&_h2]:text-xl [&_p]:mb-6 [&_p]:text-[#c5d0c7]"
+          role="status"
+        >
+          Carregando suas ideias…
+        </div>
+      } @else if (mensagemErro()) {
+        <div
+          class="min-h-[280px] px-3 py-15 text-center [&_h2]:mb-3 [&_h2]:text-xl [&_p]:mb-6 [&_p]:text-[#c5d0c7]"
+          role="alert"
+        >
+          <h2>Seu quadro não carregou</h2>
+          <p>{{ mensagemErro() }}</p>
+          <button
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] wrap-anywhere hover:bg-[#3a5240] hover:text-white aria-pressed:bg-[#3a5240] aria-pressed:text-white disabled:cursor-wait disabled:opacity-60"
+            type="button"
+            (click)="carregarNotas()"
+          >
+            Tentar novamente
+          </button>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 gap-8 min-[600px]:grid-cols-2 min-[960px]:grid-cols-3">
+          @for (nota of notas(); track nota.id) {
+            <article
+              class="flex min-h-[280px] min-w-0 -rotate-1 flex-col rounded-sm bg-[#fdf3c8] bg-linear-135 from-white/20 via-transparent via-40% to-black/2 p-6 text-[#343a37] shadow-[2px_4px_10px_#0003,inset_0_1px_#fff6] transition-transform duration-300 wrap-anywhere nth-[3n+2]:rotate-1 nth-[3n+2]:bg-[#d3e4e0] nth-[3n]:-rotate-2 nth-[3n]:bg-[#f6d8d2] hover:-translate-y-1 hover:rotate-0 focus-within:-translate-y-1 focus-within:rotate-0 motion-reduce:transform-none motion-reduce:transition-none [&_a]:hover:underline [&_a]:underline-offset-4"
+            >
+              <div class="mb-4 flex flex-wrap gap-1.5">
+                @for (categoria of nota.categorias; track categoria.id) {
+                  <span
+                    class="rounded bg-black/5 px-2 py-1 text-[10px] font-semibold tracking-wider uppercase"
+                    >{{ categoria.titulo }}</span
+                  >
+                } @empty {
+                  <span
+                    class="rounded bg-black/5 px-2 py-1 text-[10px] font-semibold tracking-wider uppercase"
+                    >Sem categoria</span
+                  >
+                }
+                @if (nota.status === 'Arquivada') {
+                  <span
+                    class="rounded border border-dashed border-[#343a37]/50 bg-black/5 px-2 py-1 text-[10px] font-semibold tracking-wider uppercase"
+                    >Arquivada</span
+                  >
+                }
+              </div>
+              <h2 class="mb-3 font-['Caveat',cursive] text-3xl leading-tight font-bold">
+                <a [routerLink]="['/notas/editar', nota.id]">{{ nota.titulo }}</a>
+              </h2>
+              @if (nota.descricao) {
+                <p
+                  class="mb-6 grow font-['Caveat',cursive] text-2xl leading-relaxed whitespace-pre-wrap"
+                >
+                  {{ nota.descricao }}
+                </p>
+              }
+              <footer
+                class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-black/5 pt-4 text-[11px] text-[#4b5951]"
+              >
+                <time [attr.datetime]="nota.criadoEm">{{ formatarData(nota.criadoEm) }}</time>
+                <div
+                  class="flex gap-3 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1 [&_a]:py-1.5"
+                >
+                  <a
+                    [routerLink]="['/notas/excluir', nota.id]"
+                    [attr.aria-label]="'Excluir nota ' + nota.titulo"
+                    ><svg lucideTrash2 class="size-4" aria-hidden="true"></svg>Excluir</a
+                  >
+                  <a
+                    [routerLink]="['/notas/editar', nota.id]"
+                    [attr.aria-label]="'Editar nota ' + nota.titulo"
+                    >Editar <svg lucideArrowUpRight class="size-4" aria-hidden="true"></svg
+                  ></a>
+                </div>
+              </footer>
+            </article>
+          } @empty {
+            <div
+              class="col-span-full min-h-[280px] px-3 py-15 text-center [&_h2]:mb-3 [&_h2]:text-xl [&_p]:mb-6 [&_p]:text-[#c5d0c7]"
+            >
+              <h2>
+                {{
+                  selecionadas().length
+                    ? 'Nenhuma nota por aqui'
+                    : 'Seu cantinho começa com uma ideia'
+                }}
+              </h2>
+              <p>
+                {{
+                  selecionadas().length
+                    ? 'Não encontramos notas com todas essas categorias.'
+                    : 'Guarde um pensamento, um plano ou um lembrete na sua primeira nota.'
+                }}
+              </p>
+              @if (selecionadas().length) {
+                <button
+                  class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] wrap-anywhere hover:bg-[#3a5240] hover:text-white aria-pressed:bg-[#3a5240] aria-pressed:text-white disabled:cursor-wait disabled:opacity-60"
+                  type="button"
+                  (click)="filtrar()"
+                >
+                  Limpar filtros
+                </button>
+              } @else {
+                <a
+                  class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-[#4f6a56] bg-[#fdf3c8] px-5 py-2.5 text-sm font-semibold text-[#2a3b2c] hover:bg-[#fff8df]"
+                  routerLink="/notas/cadastrar"
+                  >Criar minha primeira nota</a
+                >
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+    <footer
+      class="mt-12 flex items-center justify-center gap-2 pt-6 text-center text-xs text-[#bdc8be]"
+    >
+      <svg lucideSparkles class="size-4 shrink-0 text-[#fdf3c8]" aria-hidden="true"></svg> Um espaço
+      tranquilo para pensamentos que merecem ficar.
+    </footer>
+  </div>
+</section>
