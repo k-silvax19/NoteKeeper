@@ -37,7 +37,7 @@ export const routes: Routes = [
         loadComponent: () => import('./categorias/cadastro/cadastro').then((l) => l.Cadastro),
       },
       {
-        path: 'editar', //Rota de edição
+        path: 'editar/:id', //Rota de edição
         loadComponent: () => import('./categorias/editar/editar').then((e) => e.Editar),
       },
     ],

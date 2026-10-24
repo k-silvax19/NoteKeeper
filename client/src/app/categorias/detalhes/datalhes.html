@@ -1,12 +1,10 @@
 <div class="p-6 sm:p-8">
   <header class="mb-7 flex items-start justify-between gap-4">
     <div>
- 
       <h2 id="titulo-detalhes" class="text-2xl font-semibold tracking-tight">
         Detalhes da categoria
       </h2>
     </div>
-   
   </header>
 
   <div class="flex items-center gap-4 rounded-2xl border border-[#e4e7de] bg-[#faf9f6] p-5">
@@ -29,6 +27,26 @@
     >
       Fechar
     </button>
+
+    <a
+      [routerLink]="['/categorias/editar', categoria().id]"
+      class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2e543f] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1e3e2c]"
+    >
+      <svg
+        aria-hidden="true"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m16 3 5 5M4 15 16 3a3.54 3.54 0 0 1 5 5L9 20l-6 1 1-6Z" />
+      </svg>
+      Editar categoria
+    </a>
     <a
       [routerLink]="['/categorias/excluir', categoria().id]"
       class="inline-flex items-center justify-center gap-2 rounded-xl bg-rose-700 px-5 py-3 text-sm font-semibold text-white hover:bg-rose-800"

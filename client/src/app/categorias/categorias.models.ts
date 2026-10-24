@@ -8,3 +8,8 @@ export interface CriarCategoriasRequest {
     readonly icone: string;
     readonly titulo: string
 }
+
+export interface EditarCategoriasRequest {
+    readonly icone: string;
+    readonly titulo: string;
+}

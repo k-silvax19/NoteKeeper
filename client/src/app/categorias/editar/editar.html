@@ -1,1 +1,133 @@
-<p>editar works!</p>
+<section
+  id="conteudo"
+  aria-labelledby="titulo-edicao"
+  class="min-h-[calc(100vh-88px)] bg-[#faf9f6] py-10 text-[#253c32] sm:py-14"
+>
+  <div class="mx-auto w-[calc(100%-36px)] max-w-[720px] sm:w-[calc(100%-64px)]">
+    <a
+      routerLink="/categorias/listar"
+      class="inline-flex items-center gap-2 rounded text-sm font-semibold text-[#64766a] hover:text-[#2e543f] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#638365]"
+    >
+      <span aria-hidden="true">←</span> Voltar para categorias
+    </a>
+
+    <header class="my-8">
+      <h1 id="titulo-edicao" class="text-3xl font-semibold tracking-tight sm:text-4xl">
+        Editar categoria
+      </h1>
+      <p class="mt-3 text-sm leading-relaxed text-[#727971]">
+        Atualize o título e o ícone da sua categoria.
+      </p>
+    </header>
+
+    @if (carregando()) {
+      <p
+        role="status"
+        class="rounded-2xl border border-[#e4e7de] bg-white p-6 text-sm text-[#727971]"
+      >
+        Carregando categoria…
+      </p>
+    } @else if (!categoriaCarregada()) {
+      <div role="alert" class="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-rose-900">
+        <p>{{ mensagemErro() }}</p>
+        <button
+          type="button"
+          (click)="carregarCategoria()"
+          class="mt-4 cursor-pointer rounded-lg border border-rose-300 bg-white px-4 py-2 text-sm font-semibold"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    } @else {
+      <form
+        (submit)="editarCategoria($event)"
+        novalidate
+        [attr.aria-busy]="enviandoFormulario()"
+        class="rounded-2xl border border-[#e4e7de] bg-white p-6 shadow-sm sm:p-8"
+      >
+        @if (mensagemErro()) {
+          <div
+            role="alert"
+            class="mb-6 whitespace-pre-line rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900"
+          >
+            {{ mensagemErro() }}
+          </div>
+        }
+
+        <fieldset [disabled]="enviandoFormulario()" class="min-w-0">
+          <label for="categoria-titulo" class="mb-2 block text-sm font-semibold"
+            >Título da categoria
+            <span class="font-normal text-[#727971]">(obrigatório)</span></label
+          >
+          <input
+            id="categoria-titulo"
+            type="text"
+            autocomplete="off"
+            placeholder="Ex.: Estudos, Trabalho ou Pessoal"
+            [formField]="formularioCategoria.titulo"
+            [attr.aria-invalid]="
+              formularioCategoria.titulo().touched() && formularioCategoria.titulo().invalid()
+            "
+            [attr.aria-describedby]="
+              formularioCategoria.titulo().touched() && formularioCategoria.titulo().invalid()
+                ? 'titulo-ajuda titulo-erro'
+                : 'titulo-ajuda'
+            "
+            class="w-full rounded-xl border border-[#d9dfd5] bg-[#fdfdfb] px-4 py-3.5 text-base outline-none placeholder:text-[#91988d] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 disabled:opacity-70 aria-[invalid=true]:border-rose-600"
+          />
+          <p id="titulo-ajuda" class="mt-2 text-xs leading-5 text-[#727971]">
+            Escolha um título entre 2 e 100 caracteres.
+          </p>
+          @if (formularioCategoria.titulo().touched() && formularioCategoria.titulo().invalid()) {
+            <p id="titulo-erro" class="mt-2 text-sm text-rose-700" aria-live="polite">
+              {{ formularioCategoria.titulo().errors()[0].message }}
+            </p>
+          }
+
+          <fieldset class="mt-6">
+            <legend class="mb-3 text-sm font-semibold">Ícone da categoria</legend>
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              @for (opcao of icones; track opcao.valor) {
+                <label class="relative cursor-pointer">
+                  <input
+                    type="radio"
+                    [value]="opcao.valor"
+                    [formField]="formularioCategoria.icone"
+                    class="peer sr-only"
+                  />
+                  <span
+                    class="flex items-center gap-3 rounded-xl border border-[#d9dfd5] p-3 text-sm text-[#64766a] peer-checked:border-[#2e543f] peer-checked:bg-[#e8efdf] peer-checked:font-semibold peer-checked:text-[#253c32] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#638365] peer-disabled:opacity-60"
+                  >
+                    <app-categoria-icone [icone]="opcao.valor" />
+                    {{ opcao.nome }}
+                  </span>
+                </label>
+              }
+            </div>
+          </fieldset>
+
+          <div
+            class="mt-8 flex flex-col-reverse gap-3 border-t border-[#e4e7de] pt-6 sm:flex-row sm:justify-end"
+          >
+            <button
+              type="button"
+              routerLink="/categorias/listar"
+              class="cursor-pointer rounded-xl border border-[#d9dfd5] px-5 py-3 text-sm font-semibold hover:bg-[#edf0e8] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#638365] disabled:cursor-wait disabled:opacity-70"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="cursor-pointer rounded-xl bg-[#2e543f] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1e3e2c] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#638365] disabled:cursor-wait disabled:opacity-70"
+            >
+              {{ enviandoFormulario() ? 'Salvando…' : 'Salvar alterações' }}
+            </button>
+          </div>
+        </fieldset>
+        <p role="status" class="sr-only">
+          {{ enviandoFormulario() ? 'Salvando categoria. Aguarde.' : '' }}
+        </p>
+      </form>
+    }
+  </div>
+</section>

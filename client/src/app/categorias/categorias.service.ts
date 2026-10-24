@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 
 import { URL_API } from '../auth/auth.tokens';
-import { CategoriasDto, CriarCategoriasRequest } from './categorias.models';
+import { CategoriasDto, CriarCategoriasRequest, EditarCategoriasRequest } from './categorias.models';
 
 @Service()
 export class CategoriasService {
@@ -25,5 +25,9 @@ export class CategoriasService {
 
   excluir(CategoriaId: string): Observable<void> {
     return this.http.delete<void>(`${this.urlApi}/categorias/${CategoriaId}`);
+  }
+
+  editar(CategoriaId: string, requisicao: EditarCategoriasRequest): Observable<CategoriasDto> {
+    return this.http.put<CategoriasDto>(`${this.urlApi}/categorias/${CategoriaId}`, requisicao);
   }
 }
