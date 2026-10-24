@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <app-auth-shell>
   <div class="mb-8">
-    <p class="mb-3 text-xs font-semibold tracking-[0.15em] text-[#638365]">OLÁ DE NOVO!</p>
+    <p class="mb-3 text-xs font-semibold tracking-[0.15em] text-[#a7bf98]">OLÁ DE NOVO!</p>
     <h2
       #tituloPagina
       tabindex="-1"
@@ -9,14 +9,14 @@
     >
       Entre na sua conta
     </h2>
-    <p class="mt-3 text-sm leading-6 text-[#727971]">
+    <p class="mt-3 text-sm leading-6 text-[#bdb7a5]">
       Seu próximo plano merece um lugar. Organize suas notas com o NoteKeeper.
     </p>
   </div>
   @if (mensagemErro()) {
     <div
       role="alert"
-      class="mb-5 whitespace-pre-line rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900"
+      class="mb-5 whitespace-pre-line rounded-xl border border-[#794a4a] bg-[#3b2424] px-4 py-3 text-sm text-[#ffb4b4]"
     >
       {{ mensagemErro() }}
     </div>
@@ -44,10 +44,10 @@
             ? 'login-email-erro'
             : null
         "
-        class="w-full rounded-xl border border-[#d9dfd5] bg-[#fdfdfb] px-4 py-3.5 text-base outline-none transition placeholder:text-[#91988d] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 aria-[invalid=true]:border-rose-600"
+        class="w-full rounded-xl border border-[#45483b] bg-[#25271f] px-4 py-3.5 text-base outline-none transition placeholder:text-[#a29f90] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 aria-[invalid=true]:border-rose-600"
       />
       @if (formularioLogin.email().touched() && formularioLogin.email().invalid()) {
-        <p id="login-email-erro" class="mt-2 text-sm text-rose-700">
+        <p id="login-email-erro" class="mt-2 text-sm text-[#ffb4b4]">
           {{ formularioLogin.email().errors()[0].message }}
         </p>
       }
@@ -68,13 +68,13 @@
             ? 'dica-senha login-senha-erro'
             : 'dica-senha'
         "
-        class="w-full rounded-xl border border-[#d9dfd5] bg-[#fdfdfb] px-4 py-3.5 text-base outline-none transition placeholder:text-[#91988d] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 aria-[invalid=true]:border-rose-600"
+        class="w-full rounded-xl border border-[#45483b] bg-[#25271f] px-4 py-3.5 text-base outline-none transition placeholder:text-[#a29f90] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 aria-[invalid=true]:border-rose-600"
       />
-      <p id="dica-senha" class="mt-2 text-xs leading-5 text-[#727971]">
+      <p id="dica-senha" class="mt-2 text-xs leading-5 text-[#bdb7a5]">
         Use pelo menos 8 caracteres, um número e um caractere especial.
       </p>
       @if (formularioLogin.senha().touched() && formularioLogin.senha().invalid()) {
-        <p id="login-senha-erro" class="mt-2 text-sm text-rose-700">
+        <p id="login-senha-erro" class="mt-2 text-sm text-[#ffb4b4]">
           {{ formularioLogin.senha().errors()[0].message }}
         </p>
       }
@@ -94,11 +94,11 @@
       {{ enviandoFormulario() ? 'Criando sua conta. Aguarde.' : '' }}
     </p>
   </form>
-  <p class="mt-7 border-t border-[#e4e7dc] pt-6 text-center text-sm text-[#727971]">
+  <p class="mt-7 border-t border-[#45483b] pt-6 text-center text-sm text-[#bdb7a5]">
     Não tem uma conta?
     <a
       routerLink="/cadastro"
-      class="font-semibold text-[#2e543f] underline decoration-[#b8c9ad] underline-offset-4 hover:text-[#1e3e2c]"
+      class="font-semibold text-[#a7bf98] underline decoration-[#b8c9ad] underline-offset-4 hover:text-[#a7bf98]"
       >Criar Conta</a
     >
   </p>

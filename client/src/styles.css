@@ -5,15 +5,18 @@
 }
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 body {
   margin: 0;
+  background-color: #1f1d14;
+  color: #dedbd2;
   font-family: 'Segoe UI', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 ::selection {
-  background: #dbe6ca;
-  color: #253c32;
+  background: #4c6243;
+  color: #ffffff;
 }
 @media (prefers-reduced-motion: reduce) {
   html {

@@ -7,23 +7,23 @@
     </div>
   </header>
 
-  <div class="flex items-center gap-4 rounded-2xl border border-[#e4e7de] bg-[#faf9f6] p-5">
-    <span class="grid size-14 shrink-0 place-items-center rounded-xl bg-[#e8efdf] text-[#355841]">
+  <div class="flex items-center gap-4 rounded-2xl border border-[#45483b] bg-[#1f1d14] p-5">
+    <span class="grid size-14 shrink-0 place-items-center rounded-xl bg-[#303c2c] text-[#a7bf98]">
       <app-categoria-icone [icone]="categoria().icone" />
     </span>
     <div class="min-w-0">
-      <p class="mb-1 text-xs font-medium text-[#727971]">Título da categoria</p>
+      <p class="mb-1 text-xs font-medium text-[#bdb7a5]">Título da categoria</p>
       <p class="text-xl font-semibold wrap-anywhere">{{ categoria().titulo }}</p>
     </div>
   </div>
 
   <footer
-    class="mt-8 flex flex-col-reverse gap-3 border-t border-[#e4e7de] pt-6 sm:flex-row sm:justify-end"
+    class="mt-8 flex flex-col-reverse gap-3 border-t border-[#45483b] pt-6 sm:flex-row sm:justify-end"
   >
     <button
       type="button"
       (click)="fechar.emit()"
-      class="cursor-pointer rounded-xl border border-[#d9dfd5] px-5 py-3 text-sm font-semibold hover:bg-[#edf0e8]"
+      class="cursor-pointer rounded-xl border border-[#45483b] px-5 py-3 text-sm font-semibold hover:bg-[#303528]"
     >
       Fechar
     </button>

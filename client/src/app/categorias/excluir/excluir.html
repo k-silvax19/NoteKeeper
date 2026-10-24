@@ -1,45 +1,45 @@
 <section
   id="conteudo"
   aria-labelledby="titulo-excluir"
-  class="min-h-[calc(100vh-88px)] bg-[#faf9f6] py-10 text-[#253c32] sm:py-14 [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-4 [&_a]:focus-visible:outline-[#638365] [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-4 [&_button]:focus-visible:outline-[#638365]"
+  class="min-h-[calc(100vh-88px)] bg-[#1f1d14] py-10 text-[#dedbd2] sm:py-14 [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-4 [&_a]:focus-visible:outline-[#638365] [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-4 [&_button]:focus-visible:outline-[#638365]"
 >
   <div class="mx-auto w-[calc(100%-36px)] max-w-[720px] sm:w-[calc(100%-64px)]">
     <h1 id="titulo-excluir" class="mb-3 text-3xl font-semibold tracking-tight">Apagar categoria</h1>
-    <p class="mb-8 text-sm text-[#727971]">Confira a categoria que deseja excluir.</p>
+    <p class="mb-8 text-sm text-[#bdb7a5]">Confira a categoria que deseja excluir.</p>
 
-    <div class="rounded-2xl border border-[#e4e7de] bg-white p-6 shadow-sm sm:p-8">
+    <div class="rounded-2xl border border-[#45483b] bg-[#27291f] p-6 shadow-sm sm:p-8">
       @if (mensagemErro()) {
         <div
           role="alert"
-          class="mb-6 whitespace-pre-line rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900"
+          class="mb-6 whitespace-pre-line rounded-xl border border-[#794a4a] bg-[#3b2424] px-4 py-3 text-sm text-[#ffb4b4]"
         >
           {{ mensagemErro() }}
         </div>
       }
 
       @if (carregando()) {
-        <p role="status" class="text-sm text-[#727971]">Carregando categoria…</p>
+        <p role="status" class="text-sm text-[#bdb7a5]">Carregando categoria…</p>
       } @else if (categoria(); as categoriaAtual) {
         <form (submit)="excluirCategoria($event)" [attr.aria-busy]="enviandoFormulario()">
           <div class="flex items-center gap-4">
             <span
-              class="grid size-12 shrink-0 place-items-center rounded-xl bg-[#e8efdf] text-[#355841]"
+              class="grid size-12 shrink-0 place-items-center rounded-xl bg-[#303c2c] text-[#a7bf98]"
             >
               <app-categoria-icone [icone]="categoriaAtual.icone" />
             </span>
             <h2 class="min-w-0 text-lg font-semibold wrap-anywhere">{{ categoriaAtual.titulo }}</h2>
           </div>
-          <p class="mt-6 text-sm leading-6 text-[#727971]">
+          <p class="mt-6 text-sm leading-6 text-[#bdb7a5]">
             Deseja apagar esta categoria? Esta ação não pode ser desfeita.
           </p>
           <div
-            class="mt-8 flex flex-col-reverse gap-3 border-t border-[#e4e7de] pt-6 sm:flex-row sm:justify-end"
+            class="mt-8 flex flex-col-reverse gap-3 border-t border-[#45483b] pt-6 sm:flex-row sm:justify-end"
           >
             <button
               type="button"
               routerLink="/categorias/listar"
               [disabled]="enviandoFormulario()"
-              class="cursor-pointer rounded-xl border border-[#d9dfd5] px-5 py-3 text-sm font-semibold hover:bg-[#edf0e8] disabled:cursor-wait disabled:opacity-70"
+              class="cursor-pointer rounded-xl border border-[#45483b] px-5 py-3 text-sm font-semibold hover:bg-[#303528] disabled:cursor-wait disabled:opacity-70"
             >
               Cancelar
             </button>
@@ -59,7 +59,7 @@
         <button
           type="button"
           (click)="carregarCategoria()"
-          class="mr-4 rounded-lg border border-[#d9dfd5] px-4 py-2 text-sm font-semibold hover:bg-[#edf0e8]"
+          class="mr-4 rounded-lg border border-[#45483b] px-4 py-2 text-sm font-semibold hover:bg-[#303528]"
         >
           Tentar novamente
         </button>

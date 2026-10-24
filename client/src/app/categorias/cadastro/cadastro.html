@@ -1,24 +1,24 @@
 <section
   id="conteudo"
   aria-labelledby="titulo-cadastro"
-  class="min-h-[calc(100vh-88px)] bg-[#faf9f6] py-10 text-[#253c32] sm:py-14"
+  class="min-h-[calc(100vh-88px)] bg-[#1f1d14] py-10 text-[#dedbd2] sm:py-14"
 >
   <div class="mx-auto w-[calc(100%-36px)] max-w-[720px] sm:w-[calc(100%-64px)]">
     <a
       routerLink="/categorias/listar"
-      class="inline-flex items-center gap-2 rounded text-sm font-semibold text-[#64766a] hover:text-[#2e543f] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#638365]"
+      class="inline-flex items-center gap-2 rounded text-sm font-semibold text-[#bdb7a5] hover:text-[#a7bf98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#638365]"
     >
       <span aria-hidden="true">←</span> Voltar para categorias
     </a>
 
     <header class="my-8">
-      <p class="mb-2 text-xs font-bold tracking-widest text-[#64766a] uppercase">
+      <p class="mb-2 text-xs font-bold tracking-widest text-[#bdb7a5] uppercase">
         Suas ideias em ordem
       </p>
       <h1 id="titulo-cadastro" class="text-3xl font-semibold tracking-tight sm:text-4xl">
         Cadastrar categoria
       </h1>
-      <p class="mt-3 text-sm leading-relaxed text-[#727971]">
+      <p class="mt-3 text-sm leading-relaxed text-[#bdb7a5]">
         Crie uma categoria para reunir suas notas por assunto.
       </p>
     </header>
@@ -27,12 +27,12 @@
       (submit)="cadastrarCategorias($event)"
       novalidate
       [attr.aria-busy]="enviandoFormulario()"
-      class="rounded-2xl border border-[#e4e7de] bg-white p-6 shadow-sm sm:p-8"
+      class="rounded-2xl border border-[#45483b] bg-[#27291f] p-6 shadow-sm sm:p-8"
     >
       @if (mensagemErro()) {
         <div
           role="alert"
-          class="mb-6 whitespace-pre-line rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900"
+          class="mb-6 whitespace-pre-line rounded-xl border border-[#794a4a] bg-[#3b2424] px-4 py-3 text-sm text-[#ffb4b4]"
         >
           {{ mensagemErro() }}
         </div>
@@ -40,7 +40,7 @@
 
       <fieldset [disabled]="enviandoFormulario()" class="min-w-0">
         <label for="categoria-titulo" class="mb-2 block text-sm font-semibold"
-          >Título da categoria <span class="font-normal text-[#727971]">(obrigatório)</span></label
+          >Título da categoria <span class="font-normal text-[#bdb7a5]">(obrigatório)</span></label
         >
         <input
           id="categoria-titulo"
@@ -56,13 +56,13 @@
               ? 'titulo-ajuda titulo-erro'
               : 'titulo-ajuda'
           "
-          class="w-full rounded-xl border border-[#d9dfd5] bg-[#fdfdfb] px-4 py-3.5 text-base outline-none placeholder:text-[#91988d] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 disabled:opacity-70 aria-[invalid=true]:border-rose-600"
+          class="w-full rounded-xl border border-[#45483b] bg-[#25271f] px-4 py-3.5 text-base outline-none placeholder:text-[#a29f90] focus:border-[#638365] focus:ring-4 focus:ring-[#638365]/15 disabled:opacity-70 aria-[invalid=true]:border-rose-600"
         />
-        <p id="titulo-ajuda" class="mt-2 text-xs leading-5 text-[#727971]">
+        <p id="titulo-ajuda" class="mt-2 text-xs leading-5 text-[#bdb7a5]">
           Escolha um título entre 2 e 100 caracteres.
         </p>
         @if (formularioCategoria.titulo().touched() && formularioCategoria.titulo().invalid()) {
-          <p id="titulo-erro" class="mt-2 text-sm text-rose-700" aria-live="polite">
+          <p id="titulo-erro" class="mt-2 text-sm text-[#ffb4b4]" aria-live="polite">
             {{ formularioCategoria.titulo().errors()[0].message }}
           </p>
         }
@@ -79,7 +79,7 @@
                   class="peer sr-only"
                 />
                 <span
-                  class="flex items-center gap-3 rounded-xl border border-[#d9dfd5] p-3 text-sm text-[#64766a] peer-checked:border-[#2e543f] peer-checked:bg-[#e8efdf] peer-checked:font-semibold peer-checked:text-[#253c32] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#638365] peer-disabled:opacity-60"
+                  class="flex items-center gap-3 rounded-xl border border-[#45483b] p-3 text-sm text-[#bdb7a5] peer-checked:border-[#2e543f] peer-checked:bg-[#303c2c] peer-checked:font-semibold peer-checked:text-[#dedbd2] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#638365] peer-disabled:opacity-60"
                 >
                   <app-categoria-icone [icone]="opcao.valor" />
                   {{ opcao.nome }}
@@ -90,12 +90,12 @@
         </fieldset>
 
         <div
-          class="mt-8 flex flex-col-reverse gap-3 border-t border-[#e4e7de] pt-6 sm:flex-row sm:justify-end"
+          class="mt-8 flex flex-col-reverse gap-3 border-t border-[#45483b] pt-6 sm:flex-row sm:justify-end"
         >
           <button
             type="button"
             routerLink="/categorias/listar"
-            class="cursor-pointer rounded-xl border border-[#d9dfd5] px-5 py-3 text-sm font-semibold hover:bg-[#edf0e8] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#638365] disabled:cursor-wait disabled:opacity-70"
+            class="cursor-pointer rounded-xl border border-[#45483b] px-5 py-3 text-sm font-semibold hover:bg-[#303528] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#638365] disabled:cursor-wait disabled:opacity-70"
           >
             Cancelar
           </button>
