@@ -47,6 +47,32 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'notas',
+    canActivate: [isAuthenticatedGuard],
+    canActivateChild: [isAuthenticatedGuard],
+    loadComponent: () =>
+      import('./notas/shell/notas-shell').then((l) => l.NotasShell),
+    children: [
+      { path: '', redirectTo: 'listar', pathMatch: 'full' },
+      {
+        path: 'excluir/:id', //rota de exclusão
+        loadComponent: () => import('./notas/excluir-notas/excluir-notas').then((l) => l.ExcluirNotas),
+      },
+      {
+        path: 'listar', //rota de listagem
+        loadComponent: () => import('./notas/listar-notas/listar-notas').then((l) => l.ListarNotas),
+      },
+      {
+        path: 'cadastrar', //Rota de cadastro
+        loadComponent: () => import('./notas/cadastrar-notas/cadastrar-notas').then((l) => l.CadastrarNotas),
+      },
+      {
+        path: 'editar/:id', //Rota de edição
+        loadComponent: () => import('./notas/editar-notas/editar-notas').then((e) => e.EditarNotas),
+      },
+    ],
+  },
 ];
 
 export const appConfig: ApplicationConfig = {
