@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { LucideStickyNote, LucideTrash2 } from '@lucide/angular';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotasService } from '../notas.service';
 import { NotasDto } from '../notas-models';
 import { ApiValidationProblemDetails } from '../../auth/auth-models';
 
 @Component({
-  imports: [],
+  imports: [RouterLink, LucideStickyNote, LucideTrash2],
   selector: 'app-excluir-notas',
   templateUrl: './excluir-notas.html',
 })

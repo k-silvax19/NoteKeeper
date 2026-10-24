@@ -1,1 +1,102 @@
-<p>excluir-notas works!</p>
+<section
+  id="conteudo"
+  aria-labelledby="titulo-excluir"
+  class="min-h-[calc(100vh-88px)] bg-[#1f1d14] py-10 text-[#dedbd2] sm:py-14 [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-4 [&_a]:focus-visible:outline-[#638365] [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-4 [&_button]:focus-visible:outline-[#638365]"
+>
+  <div class="mx-auto w-[calc(100%-36px)] max-w-[720px] sm:w-[calc(100%-64px)]">
+    <h1 id="titulo-excluir" class="mb-3 text-3xl font-semibold tracking-tight">Apagar nota</h1>
+    <p class="mb-8 text-sm text-[#bdb7a5]">Confira a nota que deseja excluir.</p>
+
+    <div class="rounded-2xl border border-[#45483b] bg-[#27291f] p-6 shadow-sm sm:p-8">
+      @if (mensagemErro()) {
+        <div
+          role="alert"
+          class="mb-6 rounded-xl border border-[#794a4a] bg-[#3b2424] px-4 py-3 text-sm whitespace-pre-line text-[#ffb4b4]"
+        >
+          {{ mensagemErro() }}
+        </div>
+      }
+
+      @if (carregando()) {
+        <p role="status" class="text-sm text-[#bdb7a5]">Carregando nota…</p>
+      } @else if (nota(); as notaAtual) {
+        <form (submit)="excluirNota($event)" [attr.aria-busy]="enviandoFormulario()">
+          <div class="flex items-center gap-4">
+            <span
+              class="grid size-12 shrink-0 place-items-center rounded-xl bg-[#303c2c] text-[#a7bf98]"
+            >
+              <svg lucideStickyNote class="size-6" aria-hidden="true"></svg>
+            </span>
+            <h2 class="min-w-0 text-lg font-semibold wrap-anywhere">{{ notaAtual.titulo }}</h2>
+          </div>
+
+          @if (notaAtual.descricao) {
+            <p class="mt-5 text-sm leading-6 whitespace-pre-wrap text-[#bdb7a5] wrap-anywhere">
+              {{ notaAtual.descricao }}
+            </p>
+          }
+
+          <dl class="mt-6 space-y-4 text-sm">
+            <div>
+              <dt class="mb-2 font-semibold">Status</dt>
+              <dd class="text-[#bdb7a5]">{{ notaAtual.status }}</dd>
+            </div>
+            <div>
+              <dt class="mb-2 font-semibold">Categorias</dt>
+              <dd class="flex flex-wrap gap-2">
+                @for (categoria of notaAtual.categorias; track categoria.id) {
+                  <span
+                    class="rounded-lg border border-[#45483b] bg-[#303c2c] px-3 py-1 text-[#bdb7a5] wrap-anywhere"
+                    >{{ categoria.titulo }}</span
+                  >
+                } @empty {
+                  <span class="text-[#bdb7a5]">Sem categoria</span>
+                }
+              </dd>
+            </div>
+          </dl>
+
+          <p class="mt-6 text-sm leading-6 text-[#bdb7a5]">
+            Deseja apagar esta nota? Esta ação não pode ser desfeita.
+          </p>
+          <div
+            class="mt-8 flex flex-col-reverse gap-3 border-t border-[#45483b] pt-6 sm:flex-row sm:justify-end"
+          >
+            <button
+              type="button"
+              routerLink="/notas/listar"
+              [disabled]="enviandoFormulario()"
+              class="cursor-pointer rounded-xl border border-[#45483b] px-5 py-3 text-sm font-semibold hover:bg-[#303528] disabled:cursor-wait disabled:opacity-70"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              [disabled]="enviandoFormulario()"
+              class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-rose-700 px-5 py-3 text-sm font-semibold text-white hover:bg-rose-800 disabled:cursor-wait disabled:opacity-70"
+            >
+              <svg lucideTrash2 class="size-4" aria-hidden="true"></svg>
+              {{ enviandoFormulario() ? 'Apagando…' : 'Apagar nota' }}
+            </button>
+          </div>
+          <p role="status" class="sr-only">
+            {{ enviandoFormulario() ? 'Apagando nota. Aguarde.' : '' }}
+          </p>
+        </form>
+      } @else {
+        <div class="flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            (click)="carregarNota()"
+            class="cursor-pointer rounded-lg border border-[#45483b] px-4 py-2 text-sm font-semibold hover:bg-[#303528]"
+          >
+            Tentar novamente
+          </button>
+          <a routerLink="/notas/listar" class="text-sm font-semibold underline underline-offset-4"
+            >Voltar para notas</a
+          >
+        </div>
+      }
+    </div>
+  </div>
+</section>
