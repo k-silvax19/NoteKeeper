@@ -1,1 +1,52 @@
-<p>datalhes works!</p>
+<div class="p-6 sm:p-8">
+  <header class="mb-7 flex items-start justify-between gap-4">
+    <div>
+ 
+      <h2 id="titulo-detalhes" class="text-2xl font-semibold tracking-tight">
+        Detalhes da categoria
+      </h2>
+    </div>
+   
+  </header>
+
+  <div class="flex items-center gap-4 rounded-2xl border border-[#e4e7de] bg-[#faf9f6] p-5">
+    <span class="grid size-14 shrink-0 place-items-center rounded-xl bg-[#e8efdf] text-[#355841]">
+      <app-categoria-icone [icone]="categoria().icone" />
+    </span>
+    <div class="min-w-0">
+      <p class="mb-1 text-xs font-medium text-[#727971]">Título da categoria</p>
+      <p class="text-xl font-semibold wrap-anywhere">{{ categoria().titulo }}</p>
+    </div>
+  </div>
+
+  <footer
+    class="mt-8 flex flex-col-reverse gap-3 border-t border-[#e4e7de] pt-6 sm:flex-row sm:justify-end"
+  >
+    <button
+      type="button"
+      (click)="fechar.emit()"
+      class="cursor-pointer rounded-xl border border-[#d9dfd5] px-5 py-3 text-sm font-semibold hover:bg-[#edf0e8]"
+    >
+      Fechar
+    </button>
+    <a
+      [routerLink]="['/categorias/excluir', categoria().id]"
+      class="inline-flex items-center justify-center gap-2 rounded-xl bg-rose-700 px-5 py-3 text-sm font-semibold text-white hover:bg-rose-800"
+    >
+      <svg
+        aria-hidden="true"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7" />
+      </svg>
+      Apagar categoria
+    </a>
+  </footer>
+</div>

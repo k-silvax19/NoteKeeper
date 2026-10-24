@@ -33,11 +33,6 @@ export const routes: Routes = [
         loadComponent: () => import('./categorias/listar/listar').then((l) => l.Listar),
       },
       {
-        path: 'detalhes/:id',
-        loadComponent: () =>
-          import('./categorias/detalhes/datalhes').then((c) => c.Datalhes),
-      },
-      {
         path: 'cadastrar', //Rota de cadastro
         loadComponent: () => import('./categorias/cadastro/cadastro').then((l) => l.Cadastro),
       },

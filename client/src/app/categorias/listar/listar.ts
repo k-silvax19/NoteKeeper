@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Datalhes } from '../detalhes/datalhes';
 import { CategoriaIcone } from '../categoria-icone';
 import { RouterLink } from '@angular/router';
 import { CategoriasService } from '../categorias.service';
@@ -7,7 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ApiValidationProblemDetails } from '../../auth/auth-models';
 
 @Component({
-  imports: [RouterLink, CategoriaIcone],
+  imports: [RouterLink, CategoriaIcone, Datalhes],
   selector: 'app-listar',
   templateUrl: './listar.html',
 })
@@ -17,6 +18,18 @@ export class Listar {
   protected readonly categorias = signal<readonly CategoriasDto[]>([]);
   protected readonly mensagemErro = signal('');
   protected readonly carregando = signal(true);
+
+  protected readonly categoriaSelecionada = signal<CategoriasDto | null>(null);
+  private readonly modalDetalhes = viewChild.required<ElementRef<HTMLDialogElement>>('modalDetalhes');
+
+  protected abrirDetalhes(categoria: CategoriasDto): void {
+    this.categoriaSelecionada.set(categoria);
+    this.modalDetalhes().nativeElement.showModal();
+  }
+
+  protected fecharDetalhes(): void {
+    this.modalDetalhes().nativeElement.close();
+  }
 
   constructor() {
     this.carregarCategorias();
