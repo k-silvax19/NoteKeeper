@@ -21,27 +21,46 @@
         ><svg lucidePlus class="size-5" aria-hidden="true"></svg> Nova nota</a
       >
     </header>
-    <div class="mb-9 flex flex-wrap gap-3" role="group" aria-label="Filtrar por categorias">
-      <button
-        class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] wrap-anywhere hover:bg-[#3a5240] hover:text-white aria-pressed:bg-[#3a5240] aria-pressed:text-white disabled:cursor-wait disabled:opacity-60"
-        type="button"
-        [disabled]="carregando()"
-        [attr.aria-pressed]="selecionadas().length === 0"
-        (click)="filtrar()"
-      >
-        Todas
-      </button>
-      @for (categoria of categorias(); track categoria.id) {
+    <div class="mb-9 flex flex-wrap items-center gap-5">
+      <div class="flex flex-wrap gap-3" role="group" aria-label="Filtrar por categorias">
         <button
           class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] wrap-anywhere hover:bg-[#3a5240] hover:text-white aria-pressed:bg-[#3a5240] aria-pressed:text-white disabled:cursor-wait disabled:opacity-60"
           type="button"
           [disabled]="carregando()"
-          [attr.aria-pressed]="selecionadas().includes(categoria.id)"
-          (click)="filtrar(categoria.id)"
+          [attr.aria-pressed]="selecionadas().length === 0"
+          (click)="filtrar()"
         >
-          {{ categoria.titulo }}
+          Todas
         </button>
-      }
+        @for (categoria of categorias(); track categoria.id) {
+          <button
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] wrap-anywhere hover:bg-[#3a5240] hover:text-white aria-pressed:bg-[#3a5240] aria-pressed:text-white disabled:cursor-wait disabled:opacity-60"
+            type="button"
+            [disabled]="carregando()"
+            [attr.aria-pressed]="selecionadas().includes(categoria.id)"
+            (click)="filtrar(categoria.id)"
+          >
+            {{ categoria.titulo }}
+          </button>
+        }
+      </div>
+      <div
+        class="flex flex-wrap items-center gap-3 sm:border-l sm:border-[#4f6a56] sm:pl-5"
+        role="group"
+        aria-label="Filtrar por status"
+      >
+        <span class="text-sm text-[#bdc8be]">Status</span>
+        @for (filtro of filtrosStatus; track filtro.valor) {
+          <button
+            type="button"
+            (click)="statusSelecionado.set(filtro.valor)"
+            [attr.aria-pressed]="statusSelecionado() === filtro.valor"
+            class="cursor-pointer rounded-xl border border-[#4f6a56] px-5 py-2.5 text-sm text-[#d2dbd3] hover:bg-[#3a5240] aria-pressed:bg-[#3a5240] aria-pressed:text-white"
+          >
+            {{ filtro.titulo }}
+          </button>
+        }
+      </div>
     </div>
     @if (erroCategorias()) {
       <p class="-mt-4 mb-7 text-sm text-[#d2dbd3]" role="status">
@@ -54,23 +73,6 @@
         Exibindo notas com todas as categorias selecionadas.
       </p>
     }
-    <div
-      class="mb-8 flex flex-wrap items-center gap-3"
-      role="group"
-      aria-label="Filtrar por status"
-    >
-      <span class="text-sm text-[#bdc8be]">Status</span>
-      @for (filtro of filtrosStatus; track filtro.valor) {
-        <button
-          type="button"
-          (click)="statusSelecionado.set(filtro.valor)"
-          [attr.aria-pressed]="statusSelecionado() === filtro.valor"
-          class="cursor-pointer rounded-xl border border-[#4f6a56] px-4 py-2 text-sm text-[#d2dbd3] hover:bg-[#3a5240] aria-pressed:bg-[#3a5240] aria-pressed:text-white"
-        >
-          {{ filtro.titulo }}
-        </button>
-      }
-    </div>
     <div [attr.aria-busy]="carregando()" aria-live="polite">
       @if (carregando()) {
         <div

@@ -29,7 +29,7 @@ export class ListarNotas {
   ] as const;
   protected readonly notasFiltradas = computed(() =>
     this.notas().filter(
-      (nota) => !this.statusSelecionado() || nota.status === this.statusSelecionado(),
+      (nota) => nota.status === (this.statusSelecionado() ?? 'Ativa'),
     ),
   );
   protected readonly notaSelecionada = signal<NotasDto | null>(null);
