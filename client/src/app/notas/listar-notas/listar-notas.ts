@@ -22,7 +22,7 @@ export class ListarNotas {
   protected readonly categorias = signal<readonly CategoriasDto[]>([]);
 
   protected readonly selecionadas = signal<readonly string[]>([]);
-  protected readonly statusSelecionado = signal<StatusNota | null>(null);
+  protected readonly statusSelecionado = signal<StatusNota | null>(null); 
   protected readonly filtrosStatus = [
     { valor: null, titulo: 'Todas' },
     { valor: 'Ativa', titulo: 'Ativas' },
