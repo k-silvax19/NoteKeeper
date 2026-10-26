@@ -25,10 +25,13 @@ export class Editar {
 
   protected readonly icones = ICONES_CATEGORIA;
   protected readonly carregando = signal(true);
+
   protected readonly categoriaCarregada = signal(false);
   protected readonly enviandoFormulario = signal(false);
+
   protected readonly mensagemErro = signal('');
   protected readonly modeloCategoria = signal<CategoriaFormModel>({ titulo: '', icone: 'pasta' });
+  
   protected readonly formularioCategoria = form(this.modeloCategoria, (modelo) => {
     required(modelo.titulo, { message: 'Informe o título da categoria.' });
     minLength(modelo.titulo, 2, { message: 'O título deve conter no mínimo 2 caracteres.' });
