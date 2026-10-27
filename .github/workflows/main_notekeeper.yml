@@ -32,6 +32,20 @@ jobs:
       - name: Build with dotnet
         run: dotnet build "${{ env.PROJECT_PATH }}" --configuration Release --no-restore
 
+      - name: Restore Entity Framework tools
+        run: dotnet tool restore --tool-manifest ./server/dotnet-tools.json
+
+      - name: Apply database migrations
+        working-directory: ./server
+        shell: pwsh
+        env:
+          ConnectionStrings__SqlServer: ${{ secrets.AZURESQL_CONNECTION_STRING }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:ConnectionStrings__SqlServer)) {
+            throw "The AZURESQL_CONNECTION_STRING secret is required to apply migrations."
+          }
+          dotnet ef database update --project ./src/Infraestrutura/NoteKeeper.Infraestrutura.csproj --startup-project ./src/Api/NoteKeeper.Api.csproj --context NoteKeeperDbContext --configuration Release --no-build
+
       - name: Publish application
         run: dotnet publish "${{ env.PROJECT_PATH }}" --configuration Release --no-build --no-restore --output "${{ env.PUBLISH_PATH }}"
 
@@ -75,7 +89,7 @@ jobs:
             --resource-group "NoteKeeper" `
             --name "NoteKeeper" `
             --settings `
-              "ConnectionStrings__SqlServerEF=$env:AZURESQL_CONNECTION_STRING" `
+              "ConnectionStrings__SqlServer=$env:AZURESQL_CONNECTION_STRING" `
               "Infra__NewRelic__LicenseKey=$env:NEWRELIC_LICENSE_KEY" `
               "Apresentacao__AutoMapper__LicenseKey=$env:AUTOMAPPER_LICENSE_KEY"
 
