@@ -32,19 +32,25 @@ jobs:
       - name: Build with dotnet
         run: dotnet build "${{ env.PROJECT_PATH }}" --configuration Release --no-restore
 
-      - name: Restore Entity Framework tools
-        run: dotnet tool restore --tool-manifest ./server/dotnet-tools.json
+      - name: Install Entity Framework CLI
+        run: dotnet tool install --global dotnet-ef
 
-      - name: Apply database migrations
+      - name: Restore tools
+        working-directory: ./server
+        run: dotnet tool restore
+
+      - name: Apply ORM migrations to AzureSQL
         working-directory: ./server
         shell: pwsh
         env:
           ConnectionStrings__SqlServer: ${{ secrets.AZURESQL_CONNECTION_STRING }}
+          Infra__NewRelic__LicenseKey: ${{ secrets.NEWRELIC_LICENSE_KEY }}
         run: |
-          if ([string]::IsNullOrWhiteSpace($env:ConnectionStrings__SqlServer)) {
-            throw "The AZURESQL_CONNECTION_STRING secret is required to apply migrations."
-          }
-          dotnet ef database update --project ./src/Infraestrutura/NoteKeeper.Infraestrutura.csproj --startup-project ./src/Api/NoteKeeper.Api.csproj --context NoteKeeperDbContext --configuration Release --no-build
+          dotnet ef database update `
+            --project src/Infraestrutura/NoteKeeper.Infraestrutura.csproj `
+            --startup-project src/Api/NoteKeeper.Api.csproj `
+            --configuration Release `
+            --connection "$env:ConnectionStrings__SqlServer"
 
       - name: Publish application
         run: dotnet publish "${{ env.PROJECT_PATH }}" --configuration Release --no-build --no-restore --output "${{ env.PUBLISH_PATH }}"
