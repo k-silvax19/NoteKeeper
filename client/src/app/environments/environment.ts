@@ -1,3 +1,3 @@
 export const environment = {
-  urlApi: 'http://localhost:5146',
+  urlApi: 'https://notekeeper-f5efcabxdycseaaf.westus3-01.azurewebsites.net/',
 };
