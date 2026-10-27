@@ -1,5 +1,5 @@
 
-name: Build and deploy ASP.Net Core app to Azure Web App - NoteKeeper
+name: Build and deploy NoteKeeper to Azure
 
 on:
   push:
@@ -10,10 +10,14 @@ on:
 env:
   PROJECT_PATH: ./server/src/Api/NoteKeeper.Api.csproj
   PUBLISH_PATH: ./publish
+  AZURE_WEBAPP_NAME: NoteKeeper
+  AZURE_RESOURCE_GROUP: NoteKeeper
 
 jobs:
   build:
+    name: Build and Publish
     runs-on: windows-latest
+
     permissions:
       contents: read
 
@@ -21,48 +25,61 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET 10
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.x'
 
       - name: Restore dependencies
-        run: dotnet restore "${{ env.PROJECT_PATH }}"
-
-      - name: Build with dotnet
-        run: dotnet build "${{ env.PROJECT_PATH }}" --configuration Release --no-restore
-
-      - name: Install Entity Framework CLI
-        run: dotnet tool install --global dotnet-ef
-
-      - name: Restore tools
-        working-directory: ./server
-        run: dotnet tool restore
-
-      - name: Apply ORM migrations to AzureSQL
-        working-directory: ./server
         shell: pwsh
-        env:
-          ConnectionStrings__SqlServer: ${{ secrets.AZURESQL_CONNECTION_STRING }}
-          Infra__NewRelic__LicenseKey: ${{ secrets.NEWRELIC_LICENSE_KEY }}
         run: |
-          dotnet ef database update `
-            --project src/Infraestrutura/NoteKeeper.Infraestrutura.csproj `
-            --startup-project src/Api/NoteKeeper.Api.csproj `
+          dotnet restore "${{ env.PROJECT_PATH }}"
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha no restore."
+          }
+
+      - name: Build application
+        shell: pwsh
+        run: |
+          dotnet build "${{ env.PROJECT_PATH }}" `
             --configuration Release `
-            --connection "$env:ConnectionStrings__SqlServer"
+            --no-restore
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha no build."
+          }
 
       - name: Publish application
-        run: dotnet publish "${{ env.PROJECT_PATH }}" --configuration Release --no-build --no-restore --output "${{ env.PUBLISH_PATH }}"
+        shell: pwsh
+        run: |
+          dotnet publish "${{ env.PROJECT_PATH }}" `
+            --configuration Release `
+            --no-build `
+            --no-restore `
+            --output "${{ env.PUBLISH_PATH }}"
 
-      - name: Upload artifact
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha no publish."
+          }
+
+      - name: Verify published files
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "./publish/NoteKeeper.Api.dll")) {
+            throw "NoteKeeper.Api.dll nao encontrada."
+          }
+
+          Write-Host "Publicacao validada."
+
+      - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{ env.PUBLISH_PATH }}
+          name: notekeeper-app
+          path: ./publish
           if-no-files-found: error
 
   deploy:
+    name: Configure Azure and Deploy
     runs-on: windows-latest
     needs: build
 
@@ -71,10 +88,10 @@ jobs:
       contents: read
 
     steps:
-      - name: Download artifact
+      - name: Download deployment artifact
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
+          name: notekeeper-app
           path: ./publish
 
       - name: Login to Azure
@@ -84,6 +101,30 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A20CCA3C377B4D2FA2F95642882BABB9 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_85E7C8CB862B4B1092E97274B69E7B7A }}
 
+      - name: Validate production secrets
+        shell: pwsh
+        env:
+          AZURESQL_CONNECTION_STRING: ${{ secrets.AZURESQL_CONNECTION_STRING }}
+          JWT_SIGNING_KEY: ${{ secrets.JWT_SIGNING_KEY }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:AZURESQL_CONNECTION_STRING)) {
+            throw "AZURESQL_CONNECTION_STRING nao configurado."
+          }
+
+          if ([string]::IsNullOrWhiteSpace($env:JWT_SIGNING_KEY)) {
+            throw "JWT_SIGNING_KEY nao configurado."
+          }
+
+          $keySize = [System.Text.Encoding]::UTF8.GetByteCount(
+            $env:JWT_SIGNING_KEY
+          )
+
+          if ($keySize -lt 32) {
+            throw "JWT_SIGNING_KEY deve possuir pelo menos 32 bytes."
+          }
+
+          Write-Host "Secrets obrigatorios validados."
+
       - name: Configure Azure Web App settings
         shell: pwsh
         env:
@@ -92,18 +133,104 @@ jobs:
           AUTOMAPPER_LICENSE_KEY: ${{ secrets.AUTOMAPPER_LICENSE_KEY }}
           JWT_SIGNING_KEY: ${{ secrets.JWT_SIGNING_KEY }}
         run: |
-          az webapp config appsettings set `
-            --resource-group "NoteKeeper" `
-            --name "NoteKeeper" `
-            --settings `
-              "ConnectionStrings__SqlServer=$env:AZURESQL_CONNECTION_STRING" `
-              "Infra__NewRelic__LicenseKey=$env:NEWRELIC_LICENSE_KEY" `
-              "Apresentacao__AutoMapper__LicenseKey=$env:AUTOMAPPER_LICENSE_KEY"
+          $settings = @(
+            "ConnectionStrings__SqlServer=$env:AZURESQL_CONNECTION_STRING"
+            "ConnectionStrings__SqlServerEF=$env:AZURESQL_CONNECTION_STRING"
+            "Jwt__SigningKey=$env:JWT_SIGNING_KEY"
+          )
+
+          if (-not [string]::IsNullOrWhiteSpace($env:NEWRELIC_LICENSE_KEY)) {
+            $settings += "Infra__NewRelic__LicenseKey=$env:NEWRELIC_LICENSE_KEY"
+          }
+
+          if (-not [string]::IsNullOrWhiteSpace($env:AUTOMAPPER_LICENSE_KEY)) {
+            $settings += "Apresentacao__AutoMapper__LicenseKey=$env:AUTOMAPPER_LICENSE_KEY"
+          }
+
+          $null = az webapp config appsettings set `
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" `
+            --name "${{ env.AZURE_WEBAPP_NAME }}" `
+            --settings $settings `
+            --output none
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha ao configurar Azure App Settings."
+          }
+
+          Write-Host "Configuracoes do Azure aplicadas."
+
+      - name: Verify JWT setting in Azure
+        shell: pwsh
+        run: |
+          $settings = az webapp config appsettings list `
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" `
+            --name "${{ env.AZURE_WEBAPP_NAME }}" `
+            --query "[?name=='Jwt__SigningKey'].name" `
+            --output tsv
+
+          if ($LASTEXITCODE -ne 0 -or $settings -notcontains "Jwt__SigningKey") {
+            throw "Nao foi possivel confirmar Jwt__SigningKey no Azure."
+          }
+
+          Write-Host "Configuracao JWT encontrada no Azure."
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'NoteKeeper'
-          slot-name: 'Production'
+          app-name: NoteKeeper
+          slot-name: Production
           package: ./publish
+
+  migrate:
+    name: Apply Entity Framework Migrations
+    runs-on: windows-latest
+    needs: deploy
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore dependencies
+        run: dotnet restore ./server/src/Api/NoteKeeper.Api.csproj
+
+      - name: Install Entity Framework CLI
+        shell: pwsh
+        run: |
+          dotnet tool install --global dotnet-ef
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha ao instalar dotnet-ef."
+          }
+
+      - name: Apply Azure SQL migrations
+        working-directory: ./server
+        shell: pwsh
+        env:
+          ConnectionStrings__SqlServer: ${{ secrets.AZURESQL_CONNECTION_STRING }}
+          ConnectionStrings__SqlServerEF: ${{ secrets.AZURESQL_CONNECTION_STRING }}
+          Jwt__SigningKey: ${{ secrets.JWT_SIGNING_KEY }}
+          Infra__NewRelic__LicenseKey: ${{ secrets.NEWRELIC_LICENSE_KEY }}
+          Apresentacao__AutoMapper__LicenseKey: ${{ secrets.AUTOMAPPER_LICENSE_KEY }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:ConnectionStrings__SqlServer)) {
+            throw "Connection string nao configurada."
+          }
+
+          dotnet ef database update `
+            --project src/Infraestrutura/NoteKeeper.Infraestrutura.csproj `
+            --startup-project src/Api/NoteKeeper.Api.csproj `
+            --configuration Release `
+            --connection "$env:ConnectionStrings__SqlServer"
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha ao aplicar migrations."
+          }
+
+          Write-Host "Migrations finalizadas."
