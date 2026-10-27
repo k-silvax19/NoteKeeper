@@ -71,7 +71,9 @@
           </div>
           <button
             type="button"
-            (click)="closeMenu(); authService.encerrarSessao()"
+            (click)="sair()"
+            [disabled]="encerrandoSessao()"
+            [attr.aria-busy]="encerrandoSessao()"
             title="Sair da conta"
             aria-label="Sair da conta"
             class="inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-[#45483b] text-[#bdb7a5] hover:bg-[#303528] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#638365]"
@@ -79,6 +81,9 @@
             <svg lucideLogOut class="size-[18px]" aria-hidden="true"></svg>
           </button>
         </div>
+        @if (erroLogout()) {
+          <p role="alert" class="text-sm text-red-300">{{ erroLogout() }}</p>
+        }
       </nav>
     } @else {
       <div

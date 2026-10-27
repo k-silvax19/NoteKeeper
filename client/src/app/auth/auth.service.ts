@@ -54,11 +54,15 @@ export class AuthService {
       .pipe(tap((token) => this.salvarSessao(token)));
   }
 
-  encerrarSessao(): void {
-    localStorage.removeItem(this.chaveArmazenamento);
-    this.sessaoState.set(null);
+  encerrarSessao(): Observable<void> {
+    return this.http.post<void>(`${this.urlApi}/auth/logout`, {}).pipe(
+      tap(() => {
+        localStorage.removeItem(this.chaveArmazenamento);
+        this.sessaoState.set(null);
 
-    void this.router.navigateByUrl('/login');
+        void this.router.navigateByUrl('/login');
+      }),
+    );
   }
 
   private salvarSessao(token: TokenDto): void {
