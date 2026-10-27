@@ -1,53 +1,62 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
 
 name: Build and deploy ASP.Net Core app to Azure Web App - NoteKeeper
 
 on:
   push:
     branches:
-      - 'main'
+      - main
   workflow_dispatch:
+
+env:
+  PROJECT_PATH: ./server/src/Api/NoteKeeper.Api.csproj
+  PUBLISH_PATH: ./publish
 
 jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.x'
 
+      - name: Restore dependencies
+        run: dotnet restore "${{ env.PROJECT_PATH }}"
+
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build "${{ env.PROJECT_PATH }}" --configuration Release --no-restore
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+      - name: Publish application
+        run: dotnet publish "${{ env.PROJECT_PATH }}" --configuration Release --no-build --no-restore --output "${{ env.PUBLISH_PATH }}"
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{ env.PUBLISH_PATH }}
+          if-no-files-found: error
 
   deploy:
     runs-on: windows-latest
     needs: build
+
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+          path: ./publish
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -55,17 +64,20 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A20CCA3C377B4D2FA2F95642882BABB9 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_85E7C8CB862B4B1092E97274B69E7B7A }}
 
-
       - name: Configure Azure Web App settings
         shell: pwsh
+        env:
+          AZURESQL_CONNECTION_STRING: ${{ secrets.AZURESQL_CONNECTION_STRING }}
+          NEWRELIC_LICENSE_KEY: ${{ secrets.NEWRELIC_LICENSE_KEY }}
+          AUTOMAPPER_LICENSE_KEY: ${{ secrets.AUTOMAPPER_LICENSE_KEY }}
         run: |
           az webapp config appsettings set `
             --resource-group "NoteKeeper" `
             --name "NoteKeeper" `
             --settings `
-              "ConnectionStrings__SqlServerEF=${{ secrets.AZURESQL_CONNECTION_STRING }}" `
-              "Infra__NewRelic__LicenseKey=${{ secrets.NEWRELIC_LICENSE_KEY }}" `
-              "Apresentacao__AutoMapper__LicenseKey=${{ secrets.AUTOMAPPER_LICENSE_KEY }}"
+              "ConnectionStrings__SqlServerEF=$env:AZURESQL_CONNECTION_STRING" `
+              "Infra__NewRelic__LicenseKey=$env:NEWRELIC_LICENSE_KEY" `
+              "Apresentacao__AutoMapper__LicenseKey=$env:AUTOMAPPER_LICENSE_KEY"
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -73,5 +85,4 @@ jobs:
         with:
           app-name: 'NoteKeeper'
           slot-name: 'Production'
-          package: .
-          
+          package: ./publish
