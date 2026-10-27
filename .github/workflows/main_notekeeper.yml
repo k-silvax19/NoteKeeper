@@ -55,6 +55,18 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A20CCA3C377B4D2FA2F95642882BABB9 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_85E7C8CB862B4B1092E97274B69E7B7A }}
 
+
+      - name: Configure Azure Web App settings
+        shell: pwsh
+        run: |
+          az webapp config appsettings set `
+            --resource-group "NoteKeeper" `
+            --name "NoteKeeper" `
+            --settings `
+              "ConnectionStrings__SqlServerEF=${{ secrets.AZURESQL_CONNECTION_STRING }}" `
+              "Infra__NewRelic__LicenseKey=${{ secrets.NEWRELIC_LICENSE_KEY }}" `
+              "Apresentacao__AutoMapper__LicenseKey=${{ secrets.AUTOMAPPER_LICENSE_KEY }}"
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
